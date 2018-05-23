@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from "mongodb";
-import _ from "lodash";
+// import _ from "lodash";
 
 const prepare = obj => {
   obj._id = obj._id.toString();
@@ -10,10 +10,11 @@ export default {
     Query: {
         users: async (parent, args, { User }) => {
             const users = await User.find();
-            return users.map(user => {
-                user._id = user._id.toString();
-                return user;
-            })
+            return users.map(user => prepare(user));
+        },
+        user: async (parent, {email}, { User }) => {
+            const user = await User.find({ email });
+            return prepare(user[0]);
         }
     },
     Mutation: {

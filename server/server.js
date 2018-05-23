@@ -23,6 +23,9 @@ const dev = process.env.NODE_ENV === "development";
 
 const homePath = "/graphiql";
 
+app.use(morgan("dev"));
+app.use(cors("*"));
+
 app.use(
     homePath,
     graphiqlExpress({
@@ -43,8 +46,6 @@ app.use(
     })
 );
 
-app.use(morgan("dev"));
-app.use(cors("*"));
 
 app.use("/", (req, res) => {
   res.json("Go to /graphiql to test your queries and mutations!");
