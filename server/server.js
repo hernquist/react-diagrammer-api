@@ -1,26 +1,55 @@
 import express from "express";
-import graphqlHTTP from "express-graphql";
+import { graphqlExpress, graphiqlExpress } from "apollo-server-express";
 import morgan from "morgan";
-import schema from "./graphql/schema";
+import bodyParser from "body-parser";
 
-const app = express(); 
+import typeDefs from "./graphql/typeDefs";
+import resolvers from "./graphql/resolvers";
+import mongoose from "mongoose";
+
+import { makeExecutableSchema } from "graphql-tools";
+
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers
+});
+
+mongoose.connect("mongodb://localhost/test");
+
+const User = mongoose.model("User", { email: String });
+
+const app = express();
 const dev = process.env.NODE_ENV === "development";
+
+const homePath = "/graphiql";
+
+app.use(
+  homePath,
+  graphiqlExpress({
+    endpointURL: "/graphql"
+  })
+);
 
 app.use(
   "/graphql",
-  graphqlHTTP({
-    schema,
-    graphiql: dev
+  bodyParser.json(),
+  graphqlExpress((req, res) => {
+    return {
+      schema,
+      context: {
+        User
+      }
+    };
   })
 );
 
 app.use(morgan("dev"));
 
 app.use("/", (req, res) => {
-  res.json("Go to /graphql to test your queries and mutations!");
+  res.json("Go to /graphiql to test your queries and mutations!");
 });
 
 const server = app.listen(3000, () => {
   const { port } = server.address();
-  console.info(`\n\nExpress listen at http://localhost:${port} \n`);
+  console.info(`Express listen at http://localhost:${port}`);
 });
