@@ -5,10 +5,9 @@ import bodyParser from "body-parser";
 
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 import { makeExecutableSchema } from "graphql-tools";
-
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -19,28 +18,29 @@ mongoose.connect("mongodb://localhost/test");
 
 const User = mongoose.model("User", { email: String });
 
-const app = express(); 
+const app = express();
 const dev = process.env.NODE_ENV === "development";
 
-const homePath = '/graphiql';
+const homePath = "/graphiql";
 
 app.use(
-    homePath,
-    graphiqlExpress({
-        endpointURL: '/graphql'
-    })
+  homePath,
+  graphiqlExpress({
+    endpointURL: "/graphql"
+  })
 );
 
-app.use('/graphql', 
-    bodyParser.json(), 
-    graphqlExpress( (req, res) => {
-        return ({
-            schema,
-            context: { 
-                User
-            },
-        })
-    })
+app.use(
+  "/graphql",
+  bodyParser.json(),
+  graphqlExpress((req, res) => {
+    return {
+      schema,
+      context: {
+        User
+      }
+    };
+  })
 );
 
 app.use(morgan("dev"));
