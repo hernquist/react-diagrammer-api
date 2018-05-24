@@ -12,9 +12,17 @@ export default {
             const users = await User.find();
             return users.map(user => prepare(user));
         },
-        user: async (parent, {email}, { User }) => {
+        user: async (parent, { email }, { User }) => {
+            console.log("[resolvers.js]", email);
             const user = await User.find({ email });
+            console.log("[resolvers.js]", user);
             return prepare(user[0]);
+        },
+        getUserById: async (parent, { _id }, { User}) => {
+            console.log("getUserByUser:", _id);
+            const user = await User.findById(_id)
+            console.log("getUserByUser:", user);
+            return prepare(user);
         }
     },
     Mutation: {
