@@ -2,10 +2,10 @@ import express from "express";
 import { graphqlExpress, graphiqlExpress } from "apollo-server-express";
 import morgan from "morgan";
 import bodyParser from "body-parser";
-
+import mongoose from "mongoose";
+import cors from "cors";
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
-import mongoose from "mongoose";
 
 import { makeExecutableSchema } from "graphql-tools";
 
@@ -17,33 +17,43 @@ const schema = makeExecutableSchema({
 mongoose.connect("mongodb://localhost/test");
 
 const User = mongoose.model("User", { email: String });
+const Project = mongoose.model("Project", { 
+    name: String, 
+    userId: String,
+    description: String, 
+    dateCreated: Date, 
+    dateVisited: Date
+});
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
 
 const homePath = "/graphiql";
 
-app.use(
-  homePath,
-  graphiqlExpress({
-    endpointURL: "/graphql"
-  })
-);
-
-app.use(
-  "/graphql",
-  bodyParser.json(),
-  graphqlExpress((req, res) => {
-    return {
-      schema,
-      context: {
-        User
-      }
-    };
-  })
-);
-
 app.use(morgan("dev"));
+app.use(cors("*"));
+
+app.use(
+    homePath,
+    graphiqlExpress({
+        endpointURL: "/graphql"
+    })
+);
+
+app.use(
+    "/graphql",
+    bodyParser.json(),
+    graphqlExpress((req, res) => {
+        return {
+            schema,
+            context: {
+                User,
+                Project
+            }
+        };
+    })
+);
+
 
 app.use("/", (req, res) => {
   res.json("Go to /graphiql to test your queries and mutations!");
