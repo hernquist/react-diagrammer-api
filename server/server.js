@@ -17,6 +17,13 @@ const schema = makeExecutableSchema({
 mongoose.connect("mongodb://localhost/test");
 
 const User = mongoose.model("User", { email: String });
+const Project = mongoose.model("Project", { 
+    name: String, 
+    userId: String,
+    description: String, 
+    dateCreated: Date, 
+    dateVisited: Date
+});
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
@@ -40,7 +47,8 @@ app.use(
         return {
             schema,
             context: {
-                User
+                User,
+                Project
             }
         };
     })
