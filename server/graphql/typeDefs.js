@@ -1,6 +1,11 @@
 export default `
     scalar Date
 
+    enum ComponentType {
+        container
+        presentional
+    }
+
     type User {
         _id: String!
         email: String!
@@ -15,6 +20,17 @@ export default `
         dateVisited: Date!
     }
 
+    type Component {
+        _id: String!
+        name: String!
+        projectId: String!
+        style: ComponentType!
+        children: [String]
+        state: [String]
+        props: [String]
+        callbacks: [String]
+    }
+
     type Query {
         users: [User!]!
         user(email: String!): User!
@@ -25,6 +41,15 @@ export default `
     type Mutation {
         createUser(email: String!): User!
         createProject(userId: String!, name: String!, description: String!): Project!
+        createComponent(
+            name: String!, 
+            projectId: String!, 
+            style: ComponentType!, 
+            children: [String],
+            state: [String],
+            props: [String],
+            callbacks: [String]
+        ) : Component!
     }
 
 `;

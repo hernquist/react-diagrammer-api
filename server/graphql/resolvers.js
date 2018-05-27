@@ -69,6 +69,11 @@ export default {
       const project = await Project(body).save();
 
       return prepare(project);
+    },
+    createComponent: async (parent, args, { Component }) => {
+
+      let comp = await Component(args).save();
+      return prepare(comp);
     }
   }
 };

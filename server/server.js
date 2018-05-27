@@ -24,6 +24,15 @@ const Project = mongoose.model("Project", {
     dateCreated: Date, 
     dateVisited: Date
 });
+const Component = mongoose.model("Component", {
+    name: String,
+    projectId: String,
+    style: String,
+    children: [String],
+    state: [String],
+    props: [String],
+    callbacks: [String]
+})
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
@@ -48,7 +57,8 @@ app.use(
             schema,
             context: {
                 User,
-                Project
+                Project,
+                Component
             }
         };
     })
