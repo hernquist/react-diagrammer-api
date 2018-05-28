@@ -3,7 +3,7 @@ export default `
 
     enum ComponentType {
         container
-        presentional
+        presentational
     }
 
     type User {
@@ -51,7 +51,4 @@ export default `
             callbacks: [String]
         ) : Component!
     }
-
 `;
-
-

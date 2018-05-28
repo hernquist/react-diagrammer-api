@@ -58,7 +58,6 @@ export default {
         throw new Error("duplicate user - email already in use");
       }
       const user = await User(args).save();
-
       return prepare(user);
     },
     createProject: async (parent, args, { Project }) => {
@@ -67,11 +66,9 @@ export default {
       console.log("createProject:", date);
       let body = Object.assign({}, args, {dateCreated: date, dateVisited: date})
       const project = await Project(body).save();
-
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {
-
       let comp = await Component(args).save();
       return prepare(comp);
     }
