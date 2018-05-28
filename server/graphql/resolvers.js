@@ -44,11 +44,15 @@ export default {
       console.log("getUserByUser:", user);
       return prepare(user);
     },
-    projectsByUserId: async (parent, {userId}, { Project }) => {
+    projectsByUserId: async (parent, { userId }, { Project }) => {
       console.log("projectsByUserId:", userId);
       const projects = await Project.find({ userId });
       console.log("projectsByUserId:", projects);
       return projects.map(project => prepare(project));
+    },
+    componentsByProjectId: async (parent, { projectId }, { Component }) => {
+      const components = await Component.find({ projectId });
+      return components.map(component => prepare(component));
     }
   },
   Mutation: {

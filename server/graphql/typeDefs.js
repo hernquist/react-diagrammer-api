@@ -36,6 +36,7 @@ export default `
         user(email: String!): User!
         getUserById(_id: String!): User!
         projectsByUserId(userId: String!): [Project!]!
+        componentsByProjectId(projectId: String!): [Component!]!
     }
 
     type Mutation {
