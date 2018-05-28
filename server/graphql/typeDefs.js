@@ -6,6 +6,13 @@ export default `
         presentational
     }
 
+    enum Placement {
+        root
+        unassigned
+        child
+        end
+    }
+
     type User {
         _id: String!
         email: String!
@@ -25,6 +32,7 @@ export default `
         name: String!
         projectId: String!
         style: ComponentType!
+        placement: Placement!
         children: [String]
         state: [String]
         props: [String]
@@ -45,7 +53,8 @@ export default `
         createComponent(
             name: String!, 
             projectId: String!, 
-            style: ComponentType!, 
+            style: ComponentType!,
+            placement: Placement!, 
             children: [String],
             state: [String],
             props: [String],

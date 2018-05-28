@@ -28,6 +28,7 @@ const Component = mongoose.model("Component", {
     name: String,
     projectId: String,
     style: String,
+    placement: String,
     children: [String],
     state: [String],
     props: [String],
