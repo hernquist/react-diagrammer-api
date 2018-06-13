@@ -3,14 +3,12 @@ import { GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
 import _ from "lodash";
 
 const prepare = obj => {
   obj._id = obj._id.toString();
   return obj;
 };
-
 
 export default {
   Date: new GraphQLScalarType({
@@ -68,40 +66,21 @@ export default {
       if (!isValid) {
         throw new Error("Incorrect password");
       }
-
-      // token = '928734027349872342734.ldkjfg9873rh234r298y4r.0923rwjerwr32rj';
-      // verify:  needs secret | ise me for aithentication
-      // decode: no secret | use me on the client side
-
-      // considering the name could be updated this should probably be just for id
       const token = jwt.sign(
-        {
-          user: _.pick(user, ["_id", "name"])
-        },
+        { user: _.pick(user, ["_id", "name"]) },
         context.SECRET,
-        {
-          expiresIn: "1y"
-        }
+        { expiresIn: "1y" }
       );
       context.token = token;
       return token;
     },
-    // signUp: async (root, args, context, info) => {
-    //   const Users = context.User;
-    //   const res = await Users(args).save();
-    //   console.log("[signUp.js]", res);
-    //   return prepare(await Users.findOne({ _id: res._id }));
-    // },
     signUp: async (parent, args, context) => {
       const Users = context.User;
       const user = args;
       user.password = await bcrypt.hash(user.password, 12);
       const res = await Users(user).save();
-      //this might have to change, return a 'found' user
       context.token = "signup";
-      return prepare(await Users.findOne({
-          _id: res._id
-        }));
+      return prepare(await Users.findOne({ _id: res._id }));
     },
     createUser: async (parent, args, { User }) => {
       const match = await User.find({ email: args.email });
