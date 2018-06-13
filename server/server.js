@@ -7,6 +7,8 @@ import cors from "cors";
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
 
+import jwt from "jsonwebtoken";
+
 import { makeExecutableSchema } from "graphql-tools";
 
 const schema = makeExecutableSchema({
@@ -16,7 +18,11 @@ const schema = makeExecutableSchema({
 
 mongoose.connect("mongodb://localhost/test");
 
-const User = mongoose.model("User", { email: String });
+const User = mongoose.model("User", { 
+    email: String,
+    name: String,
+    password: String
+});
 const Project = mongoose.model("Project", { 
     name: String, 
     userId: String,
@@ -40,6 +46,31 @@ const dev = process.env.NODE_ENV === "development";
 
 const homePath = "/graphiql";
 
+// auth middleware
+const SECRET = "qwertyuiopsdflkjsdlfkj";
+const addUserMW = async req => {
+    // const token = req.headers["x-token"] || req.headers.authorization;
+    const token = req.headers["x-token"];
+    console.log("[addUserMW] token:", token); 
+    const message = req.headers.referer;
+    const signUp = (typeof message === "string" && message.includes("signUp"))
+
+    try {
+        const { user } = await jwt.verify(token, SECRET);
+        console.log("[addUserMW] user:", user);
+        req.user = user;
+    } catch (err) {
+        if (signUp) {
+            console.log("SignUp");
+        } else {
+            console.log("Error:", err);
+        }
+    }
+    req.next();
+};
+
+app.use(addUserMW);
+
 app.use(morgan("dev"));
 app.use(cors("*"));
 
@@ -59,12 +90,13 @@ app.use(
             context: {
                 User,
                 Project,
-                Component
+                Component,
+                SECRET,
+                user: req.user
             }
         };
     })
 );
-
 
 app.use("/", (req, res) => {
   res.json("Go to /graphiql to test your queries and mutations!");

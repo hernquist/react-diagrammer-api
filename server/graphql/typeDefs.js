@@ -16,6 +16,8 @@ export default `
     type User {
         _id: String!
         email: String!
+        name: String!
+        password: String!
     }
 
     type Project {
@@ -40,6 +42,7 @@ export default `
     }
 
     type Query {
+        getAuthUser: User
         users: [User!]!
         user(email: String!): User!
         getUserById(_id: String!): User!
@@ -48,7 +51,8 @@ export default `
     }
 
     type Mutation {
-        createUser(email: String!): User!
+        login(email: String, password: String): String
+        signup(name: String, email: String, password: String): String
         createProject(userId: String!, name: String!, description: String!): Project!
         createComponent(
             name: String!, 
