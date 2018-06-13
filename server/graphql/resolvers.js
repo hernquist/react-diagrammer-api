@@ -29,11 +29,14 @@ export default {
   }),
   Query: {
     getAuthUser: async (parent, args, context) => {
-      console.log(context.token);
       const User = context.User;
-      const users = await User.find();
-      console.log(users[0]);
-      return prepare(users[0]);
+      if (context.user) {
+        const { _id } = context.user;
+        const user = await User.find({ _id });
+        return prepare(user[0]);
+      } else {
+      return new Error ("user not authenticated");
+      }
     },
     users: async (parent, args, { User }) => {
       const users = await User.find();
