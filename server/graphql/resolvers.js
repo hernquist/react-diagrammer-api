@@ -88,9 +88,10 @@ export default {
       const Users = context.User;
       const user = args;
       user.password = await bcrypt.hash(user.password, 12);
-      await Users(user).save();
+      let savedUser = await Users(user).save();
+
       const token = jwt.sign(
-        { user: _.pick(user, ["_id", "name"]) },
+        { user: _.pick(savedUser, ["_id", "name"]) },
         context.SECRET,
         { expiresIn: "1y" }
       );
