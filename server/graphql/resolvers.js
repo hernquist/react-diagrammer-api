@@ -78,17 +78,14 @@ export default {
       const Users = context.User;
       const user = args;
       user.password = await bcrypt.hash(user.password, 12);
-      const res = await Users(user).save();
-      context.token = "signup";
-      return prepare(await Users.findOne({ _id: res._id }));
-    },
-    createUser: async (parent, args, { User }) => {
-      const match = await User.find({ email: args.email });
-      if (match.length > 0) {
-        throw new Error("duplicate user - email already in use");
-      }
-      const user = await User(args).save();
-      return prepare(user);
+      await Users(user).save();
+      const token = jwt.sign(
+        { user: _.pick(user, ["_id", "name"]) },
+        context.SECRET,
+        { expiresIn: "1y" }
+      );
+      context.token = token;
+      return token;
     },
     createProject: async (parent, args, { Project }) => {
       console.log("createProject:", args);
