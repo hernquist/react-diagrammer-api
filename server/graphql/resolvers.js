@@ -28,6 +28,13 @@ export default {
     }
   }),
   Query: {
+    getAuthUser: async (parent, args, context) => {
+      console.log(context.token);
+      const User = context.User;
+      const users = await User.find();
+      console.log(users[0]);
+      return prepare(users[0]);
+    },
     users: async (parent, args, { User }) => {
       const users = await User.find();
       return users.map(user => prepare(user));

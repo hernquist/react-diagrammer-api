@@ -42,6 +42,7 @@ export default `
     }
 
     type Query {
+        getAuthUser: User
         users: [User!]!
         user(email: String!): User!
         getUserById(_id: String!): User!
