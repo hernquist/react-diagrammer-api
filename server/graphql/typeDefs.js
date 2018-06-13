@@ -51,7 +51,7 @@ export default `
 
     type Mutation {
         login(email: String, password: String): String
-        signUp(name: String, email: String, password: String): User
+        signup(name: String, email: String, password: String): User
         createUser(email: String!): User!
         createProject(userId: String!, name: String!, description: String!): Project!
         createComponent(

@@ -74,7 +74,7 @@ export default {
       context.token = token;
       return token;
     },
-    signUp: async (parent, args, context) => {
+    signup: async (parent, args, context) => {
       const Users = context.User;
       const user = args;
       user.password = await bcrypt.hash(user.password, 12);
