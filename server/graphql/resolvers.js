@@ -97,7 +97,7 @@ export default {
       context.token = token;
       return token;
     },
-    createProject: async (parent, args, { Project }) => {
+    createProject: async (parent, args, { Project, Component }) => {
       console.log("createProject:", args);
       const date = new Date();
       console.log("createProject:", date);
@@ -106,6 +106,17 @@ export default {
         dateVisited: date
       });
       const project = await Project(body).save();
+      const index = {
+        name: 'index',
+        iteration: 0,
+        projectId: project._id,
+        style: 'presentational',
+        placement: 'root',
+        state: [''],
+        callbacks: ['']
+      }
+      const component = await Component(index).save();
+      console.log(component);
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {

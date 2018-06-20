@@ -32,6 +32,7 @@ export default `
     type Component {
         _id: String!
         name: String!
+        iteration: Int!
         projectId: String!
         style: ComponentType!
         placement: Placement!
@@ -56,7 +57,8 @@ export default `
         createProject(userId: String!, name: String!, description: String!): Project!
         createComponent(
             name: String!, 
-            projectId: String!, 
+            projectId: String!,
+            iteration: Int!, 
             style: ComponentType!,
             placement: Placement!, 
             children: [String],
