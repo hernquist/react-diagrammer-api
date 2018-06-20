@@ -27,6 +27,7 @@ export default `
         description: String!
         dateCreated: Date!
         dateVisited: Date!
+        components: [Component]
     }
 
     type Component {
@@ -46,6 +47,8 @@ export default `
         getAuthUser: User
         users: [User!]!
         user(email: String!): User!
+        components: [Component]
+        component(_id: String): Component
         getUserById(_id: String!): User!
         projectsByUserId(userId: String!): [Project!]!
         componentsByProjectId(projectId: String!): [Component!]!

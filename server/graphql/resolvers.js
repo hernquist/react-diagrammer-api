@@ -65,6 +65,9 @@ export default {
       return components.map(component => prepare(component));
     }
   },
+  Project: { components: async({ _id }, args, { Component }) => { 
+    return await Component.find({ projectId: _id })  
+  }},
   Mutation: {
     login: async (parent, { email, password }, context) => {
       const { User } = context;
