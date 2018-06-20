@@ -65,6 +65,9 @@ export default {
       return components.map(component => prepare(component));
     }
   },
+  Project: { components: async({ _id }, args, { Component }) => { 
+    return await Component.find({ projectId: _id })  
+  }},
   Mutation: {
     login: async (parent, { email, password }, context) => {
       const { User } = context;
@@ -85,19 +88,19 @@ export default {
       return token;
     },
     signup: async (parent, args, context) => {
-      const Users = context.User;
+      const User = context.User;
       const user = args;
-      user.password = await bcrypt.hash(user.password, 12);
-      await Users(user).save();
+      user.password = await bcrypt.hash(args.password, 12);
+      const savedUser = await User(user).save();
       const token = jwt.sign(
-        { user: _.pick(user, ["_id", "name"]) },
+        { user: _.pick(savedUser, ["_id", "name"]) },
         context.SECRET,
         { expiresIn: "1y" }
       );
       context.token = token;
       return token;
     },
-    createProject: async (parent, args, { Project }) => {
+    createProject: async (parent, args, { Project, Component }) => {
       console.log("createProject:", args);
       const date = new Date();
       console.log("createProject:", date);
@@ -106,6 +109,17 @@ export default {
         dateVisited: date
       });
       const project = await Project(body).save();
+      const index = {
+        name: 'index',
+        iteration: 0,
+        projectId: project._id,
+        style: 'presentational',
+        placement: 'root',
+        state: [''],
+        callbacks: ['']
+      }
+      const component = await Component(index).save();
+      console.log(component);
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {

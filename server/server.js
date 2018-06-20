@@ -34,6 +34,7 @@ const Component = mongoose.model("Component", {
     name: String,
     projectId: String,
     style: String,
+    iteration: Number,
     placement: String,
     children: [String],
     state: [String],

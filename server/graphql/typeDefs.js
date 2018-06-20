@@ -27,11 +27,13 @@ export default `
         description: String!
         dateCreated: Date!
         dateVisited: Date!
+        components: [Component]
     }
 
     type Component {
         _id: String!
         name: String!
+        iteration: Int!
         projectId: String!
         style: ComponentType!
         placement: Placement!
@@ -45,6 +47,8 @@ export default `
         getAuthUser: User
         users: [User!]!
         user(email: String!): User!
+        components: [Component]
+        component(_id: String): Component
         getUserById(_id: String!): User!
         projectsByUserId(userId: String!): [Project!]!
         componentsByProjectId(projectId: String!): [Component!]!
@@ -56,7 +60,8 @@ export default `
         createProject(userId: String!, name: String!, description: String!): Project!
         createComponent(
             name: String!, 
-            projectId: String!, 
+            projectId: String!,
+            iteration: Int!, 
             style: ComponentType!,
             placement: Placement!, 
             children: [String],
