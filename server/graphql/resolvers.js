@@ -113,7 +113,7 @@ export default {
         name: 'index',
         iteration: 0,
         projectId: project._id,
-        style: 'presentational',
+        style: 'container',
         placement: 'root',
         state: [''],
         callbacks: ['']
