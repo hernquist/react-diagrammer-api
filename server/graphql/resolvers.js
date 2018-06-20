@@ -85,12 +85,12 @@ export default {
       return token;
     },
     signup: async (parent, args, context) => {
-      const Users = context.User;
+      const User = context.User;
       const user = args;
-      user.password = await bcrypt.hash(user.password, 12);
-      await Users(user).save();
+      user.password = await bcrypt.hash(args.password, 12);
+      const savedUser = await User(user).save();
       const token = jwt.sign(
-        { user: _.pick(user, ["_id", "name"]) },
+        { user: _.pick(savedUser, ["_id", "name"]) },
         context.SECRET,
         { expiresIn: "1y" }
       );
