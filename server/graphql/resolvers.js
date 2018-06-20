@@ -125,6 +125,23 @@ export default {
     createComponent: async (parent, args, { Component }) => {
       let comp = await Component(args).save();
       return prepare(comp);
+    },
+    toggleComponentType: async(parent, { _id }, { Component }) => {
+      let component = await Component.find({ _id })
+      console.log("[toggleComponentType 1]", component);
+      const style = component[0].style === 'container' ?
+        'presentational' : 'container';
+
+      console.log("[style]", style);  
+      component[0].style = style;
+      
+      console.log("[toggleComponentType 2]", component);
+      
+      await Component.update({_id: _id}, {style: style})
+      const newComponent = await Component.find({ _id });
+      // let newComponent = await Component(component).save();
+      console.log("[toggleComponentType 3]", newComponent);
+      return prepare(newComponent[0]); 
     }
   }
 };

@@ -51,7 +51,7 @@ export default `
         component(_id: String): Component
         getUserById(_id: String!): User!
         projectsByUserId(userId: String!): [Project!]!
-        componentsByProjectId(projectId: String!): [Component!]!
+        componentsByProjectId(projectId: String!): [Component]
     }
 
     type Mutation {
@@ -69,5 +69,6 @@ export default `
             props: [String],
             callbacks: [String]
         ) : Component!
+        toggleComponentType(_id: String!): Component
     }
 `;
