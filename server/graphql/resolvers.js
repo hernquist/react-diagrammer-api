@@ -126,7 +126,7 @@ export default {
       let comp = await Component(args).save();
       return prepare(comp);
     },
-    toggleComponentType: async(parent, { _id }, { Component }) => {
+    toggleComponentStyle: async(parent, { _id }, { Component }) => {
       let component = await Component.find({ _id })
       console.log("[toggleComponentType 1]", component);
       const style = component[0].style === 'container' ?

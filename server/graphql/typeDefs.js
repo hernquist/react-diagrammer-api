@@ -69,6 +69,6 @@ export default `
             props: [String],
             callbacks: [String]
         ) : Component!
-        toggleComponentType(_id: String!): Component
+        toggleComponentStyle(_id: String!): Component
     }
 `;
