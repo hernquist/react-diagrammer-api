@@ -16,7 +16,7 @@ const schema = makeExecutableSchema({
   resolvers
 });
 
-mongoose.connect("mongodb://localhost/test");
+mongoose.connect("mongodb://localhost/react-diagrammer");
 
 const User = mongoose.model("User", { 
     email: String,
