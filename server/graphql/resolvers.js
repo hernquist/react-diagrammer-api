@@ -44,21 +44,15 @@ export default {
       return users.map(user => prepare(user));
     },
     user: async (parent, { email }, { User }) => {
-      console.log("[resolvers.js]", email);
       const user = await User.find({ email });
-      console.log("[resolvers.js]", user);
       return prepare(user[0]);
     },
     getUserById: async (parent, { _id }, { User }) => {
-      console.log("getUserByUser:", _id);
       const user = await User.findById(_id);
-      console.log("getUserByUser:", user);
       return prepare(user);
     },
     projectsByUserId: async (parent, { userId }, { Project }) => {
-      console.log("projectsByUserId:", userId);
       const projects = await Project.find({ userId });
-      console.log("projectsByUserId:", projects);
       return projects.map(project => prepare(project));
     },
     componentsByProjectId: async (parent, { projectId }, { Component }) => {
@@ -109,9 +103,7 @@ export default {
       return token;
     },
     createProject: async (parent, args, { Project, Component }) => {
-      console.log("createProject:", args);
       const date = new Date();
-      console.log("createProject:", date);
       let body = Object.assign({}, args, {
         dateCreated: date,
         dateVisited: date
@@ -127,7 +119,6 @@ export default {
         callbacks: ['']
       }
       const component = await Component(index).save();
-      console.log(component);
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {
@@ -136,19 +127,11 @@ export default {
     },
     toggleComponentStyle: async(parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
-      console.log("[toggleComponentType 1]", component);
       const style = component[0].style === 'container' ?
         'presentational' : 'container';
-
-      console.log("[style]", style);  
       component[0].style = style;
-      
-      console.log("[toggleComponentType 2]", component);
-      
       await Component.update({_id: _id}, {style: style})
       const newComponent = await Component.find({ _id });
-      // let newComponent = await Component(component).save();
-      console.log("[toggleComponentType 3]", newComponent);
       return prepare(newComponent[0]); 
     },
     editComponentName: async(_, {_id, name}, { Component }) => {
@@ -159,9 +142,7 @@ export default {
       return prepare(newComponent[0]);
     },
     addProp: async(_, args, { Prop, Component }) => {
-      let prop = await Prop(args).save();
-      console.log('[addProp] args:', args);
-      console.log('[addProp] prop:', prop);
+      await Prop(args).save();
       const _id = args.componentId;
       let component = await Component.find({ _id });
       return prepare(component[0])
