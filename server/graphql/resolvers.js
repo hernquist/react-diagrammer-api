@@ -4,6 +4,7 @@ import { Kind } from "graphql/language";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
+import { resultKeyNameFromField } from "../../node_modules/apollo-utilities";
 
 const prepare = obj => {
   obj._id = obj._id.toString();
@@ -127,7 +128,7 @@ export default {
       return prepare(comp);
     },
     toggleComponentStyle: async(parent, { _id }, { Component }) => {
-      let component = await Component.find({ _id })
+      let component = await Component.find({ _id });
       console.log("[toggleComponentType 1]", component);
       const style = component[0].style === 'container' ?
         'presentational' : 'container';
@@ -142,6 +143,13 @@ export default {
       // let newComponent = await Component(component).save();
       console.log("[toggleComponentType 3]", newComponent);
       return prepare(newComponent[0]); 
+    },
+    editComponentName: async(parent, {_id, name}, { Component }) => {
+      let component =  await Component.find({ _id });
+      component[0].name = name;
+      await Component.update({_id}, {name})
+      const newComponent = await Component.find({ _id });
+      return prepare(newComponent[0])
     }
   }
 };

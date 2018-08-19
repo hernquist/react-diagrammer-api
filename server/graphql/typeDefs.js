@@ -70,5 +70,6 @@ export default `
             callbacks: [String]
         ) : Component!
         toggleComponentStyle(_id: String!): Component
+        editComponentName(_id: String!, name: String!): Component
     }
 `;
