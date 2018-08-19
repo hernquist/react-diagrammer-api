@@ -13,13 +13,21 @@ export default `
         end
     }
 
+    enum PropType {
+        boolean
+        number
+        string
+        object
+        array
+    }
+    
     type User {
         _id: String!
         email: String!
         name: String!
         password: String!
     }
-
+    
     type Project {
         _id: String!
         userId: String!
@@ -29,7 +37,7 @@ export default `
         dateVisited: Date!
         components: [Component]
     }
-
+    
     type Component {
         _id: String!
         name: String!
@@ -39,8 +47,20 @@ export default `
         placement: Placement!
         children: [String]
         state: [String]
-        props: [String]
+        props: [Prop]
         callbacks: [String]
+    }
+    
+    type Prop {
+        componentId: String!
+        name: String!
+        proptype: PropType!
+    }
+
+    input InputProp {
+        componentId: String!
+        name: String!
+        proptype: PropType!
     }
 
     type Query {
@@ -52,6 +72,7 @@ export default `
         getUserById(_id: String!): User!
         projectsByUserId(userId: String!): [Project!]!
         componentsByProjectId(projectId: String!): [Component]
+        propsByComponentId(componentId: String!): [Prop]
     }
 
     type Mutation {
@@ -66,10 +87,11 @@ export default `
             placement: Placement!, 
             children: [String],
             state: [String],
-            props: [String],
+            props: [InputProp],
             callbacks: [String]
         ) : Component!
         toggleComponentStyle(_id: String!): Component
         editComponentName(_id: String!, name: String!): Component
+        addProp(componentId: String!, name: String!, proptype: PropType): Component
     }
 `;

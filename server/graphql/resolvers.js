@@ -64,13 +64,20 @@ export default {
     componentsByProjectId: async (parent, { projectId }, { Component }) => {
       const components = await Component.find({ projectId });
       return components.map(component => prepare(component));
+    },
+    propsByComponentId: async (parent, {componentId}, { Prop }) => {
+      const props = await Prop.find({ componentId });
+      return props.map(prop => prepare(prop)); 
     }
   },
-  Project: { components: async({ _id }, args, { Component }) => { 
+  Project: { components: async({ _id }, _, { Component }) => { 
     return await Component.find({ projectId: _id })  
   }},
+  Component: { props: async({ _id }, _, { Prop }) => {
+    return await Prop.find({ componentId: _id })
+  }},
   Mutation: {
-    login: async (parent, { email, password }, context) => {
+    login: async (_, { email, password }, context) => {
       const { User } = context;
       const user = await User.findOne({ email: email });
       if (!user) {
@@ -144,12 +151,20 @@ export default {
       console.log("[toggleComponentType 3]", newComponent);
       return prepare(newComponent[0]); 
     },
-    editComponentName: async(parent, {_id, name}, { Component }) => {
-      let component =  await Component.find({ _id });
+    editComponentName: async(_, {_id, name}, { Component }) => {
+      let component = await Component.find({ _id });
       component[0].name = name;
-      await Component.update({_id}, {name})
+      await Component.update({ _id }, { name });
       const newComponent = await Component.find({ _id });
-      return prepare(newComponent[0])
+      return prepare(newComponent[0]);
+    },
+    addProp: async(_, args, { Prop, Component }) => {
+      let prop = await Prop(args).save();
+      console.log('[addProp] args:', args);
+      console.log('[addProp] prop:', prop);
+      const _id = args.componentId;
+      let component = await Component.find({ _id });
+      return prepare(component[0])
     }
   }
 };
