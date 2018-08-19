@@ -4,6 +4,7 @@ import { Kind } from "graphql/language";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
+import { resultKeyNameFromField } from "../../node_modules/apollo-utilities";
 
 const prepare = obj => {
   obj._id = obj._id.toString();
@@ -43,31 +44,28 @@ export default {
       return users.map(user => prepare(user));
     },
     user: async (parent, { email }, { User }) => {
-      console.log("[resolvers.js]", email);
       const user = await User.find({ email });
-      console.log("[resolvers.js]", user);
       return prepare(user[0]);
     },
     getUserById: async (parent, { _id }, { User }) => {
-      console.log("getUserByUser:", _id);
       const user = await User.findById(_id);
-      console.log("getUserByUser:", user);
       return prepare(user);
     },
     projectsByUserId: async (parent, { userId }, { Project }) => {
-      console.log("projectsByUserId:", userId);
       const projects = await Project.find({ userId });
-      console.log("projectsByUserId:", projects);
       return projects.map(project => prepare(project));
     },
     componentsByProjectId: async (parent, { projectId }, { Component }) => {
       const components = await Component.find({ projectId });
       return components.map(component => prepare(component));
+    },
+    propsByComponentId: async (parent, {componentId}, { Prop }) => {
+      const props = await Prop.find({ componentId });
+      return props.map(prop => prepare(prop)); 
     }
   },
-  Project: { components: async({ _id }, args, { Component }) => { 
-    return await Component.find({ projectId: _id })  
-  }},
+  Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
+  Component: { props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id })},
   Mutation: {
     login: async (parent, { email, password }, context) => {
       const { User } = context;
@@ -101,9 +99,7 @@ export default {
       return token;
     },
     createProject: async (parent, args, { Project, Component }) => {
-      console.log("createProject:", args);
       const date = new Date();
-      console.log("createProject:", date);
       let body = Object.assign({}, args, {
         dateCreated: date,
         dateVisited: date
@@ -113,18 +109,39 @@ export default {
         name: 'index',
         iteration: 0,
         projectId: project._id,
-        style: 'presentational',
+        style: 'container',
         placement: 'root',
         state: [''],
         callbacks: ['']
       }
       const component = await Component(index).save();
-      console.log(component);
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {
-      let comp = await Component(args).save();
-      return prepare(comp);
+      let component = await Component(args).save();
+      return prepare(component);
+    },
+    toggleComponentStyle: async(parent, { _id }, { Component }) => {
+      let component = await Component.find({ _id });
+      const style = component[0].style === 'container' ?
+        'presentational' : 'container';
+      component[0].style = style;
+      await Component.update({_id: _id}, {style: style})
+      const newComponent = await Component.find({ _id });
+      return prepare(newComponent[0]); 
+    },
+    editComponentName: async(parent, {_id, name}, { Component }) => {
+      let component = await Component.find({ _id });
+      component[0].name = name;
+      await Component.update({ _id }, { name });
+      const newComponent = await Component.find({ _id });
+      return prepare(newComponent[0]);
+    },
+    addProp: async(parent, { prop }, { Prop, Component }) => {
+      await Prop(prop).save();
+      const _id = prop.componentId;
+      let component = await Component.find({ _id });
+      return prepare(component[0])
     }
   }
 };

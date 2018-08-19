@@ -16,13 +16,14 @@ const schema = makeExecutableSchema({
   resolvers
 });
 
-mongoose.connect("mongodb://localhost/test");
+mongoose.connect("mongodb://localhost/react-diagrammer");
 
 const User = mongoose.model("User", { 
     email: String,
     name: String,
     password: String
 });
+
 const Project = mongoose.model("Project", { 
     name: String, 
     userId: String,
@@ -30,6 +31,7 @@ const Project = mongoose.model("Project", {
     dateCreated: Date, 
     dateVisited: Date
 });
+
 const Component = mongoose.model("Component", {
     name: String,
     projectId: String,
@@ -38,9 +40,14 @@ const Component = mongoose.model("Component", {
     placement: String,
     children: [String],
     state: [String],
-    props: [String],
     callbacks: [String]
 })
+
+const Prop = mongoose.model("Prop", {
+    componentId: String,
+    name: String,
+    proptype: String
+});
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
@@ -92,6 +99,7 @@ app.use(
                 User,
                 Project,
                 Component,
+                Prop,
                 SECRET,
                 user: req.user
             }
