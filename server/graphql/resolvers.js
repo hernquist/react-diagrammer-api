@@ -64,14 +64,10 @@ export default {
       return props.map(prop => prepare(prop)); 
     }
   },
-  Project: { components: async({ _id }, _, { Component }) => { 
-    return await Component.find({ projectId: _id })  
-  }},
-  Component: { props: async({ _id }, _, { Prop }) => {
-    return await Prop.find({ componentId: _id })
-  }},
+  Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
+  Component: { props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id })},
   Mutation: {
-    login: async (_, { email, password }, context) => {
+    login: async (parent, { email, password }, context) => {
       const { User } = context;
       const user = await User.findOne({ email: email });
       if (!user) {
@@ -122,8 +118,8 @@ export default {
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {
-      let comp = await Component(args).save();
-      return prepare(comp);
+      let component = await Component(args).save();
+      return prepare(component);
     },
     toggleComponentStyle: async(parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
@@ -134,16 +130,16 @@ export default {
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]); 
     },
-    editComponentName: async(_, {_id, name}, { Component }) => {
+    editComponentName: async(parent, {_id, name}, { Component }) => {
       let component = await Component.find({ _id });
       component[0].name = name;
       await Component.update({ _id }, { name });
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]);
     },
-    addProp: async(_, args, { Prop, Component }) => {
-      await Prop(args).save();
-      const _id = args.componentId;
+    addProp: async(parent, { prop }, { Prop, Component }) => {
+      await Prop(prop).save();
+      const _id = prop.componentId;
       let component = await Component.find({ _id });
       return prepare(component[0])
     }

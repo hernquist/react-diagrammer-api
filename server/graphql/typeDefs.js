@@ -92,6 +92,6 @@ export default `
         ) : Component!
         toggleComponentStyle(_id: String!): Component
         editComponentName(_id: String!, name: String!): Component
-        addProp(componentId: String!, name: String!, proptype: PropType): Component
+        addProp(prop: InputProp): Component
     }
 `;
