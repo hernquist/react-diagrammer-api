@@ -131,8 +131,6 @@ export default {
       return prepare(newComponent[0]); 
     },
     editComponentName: async (parent, {_id, name}, { Component }) => {
-      let component = await Component.find({ _id });
-      component[0].name = name;
       await Component.update({ _id }, { name });
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]);
@@ -141,11 +139,15 @@ export default {
       await Prop(prop).save();
       const _id = prop.componentId;
       let component = await Component.find({ _id });
-      return prepare(component[0])
+      return prepare(component[0]);
     },
-    deleteProp: async (parent, { _id}, { Prop }) => {
-      let result = await Prop.deleteOne({ _id })
-      return result.n === 1
+    deleteProp: async (parent, { _id }, { Prop }) => {
+      let result = await Prop.deleteOne({ _id });
+      return result.n === 1;
+    },
+    editProp: async (parent, { _id, name, proptype }, { Prop, Component }) => {
+      let prop = await Prop.findOneAndUpdate({ _id }, { name, proptype });
+      return prepare(prop);
     }
   }
 };
