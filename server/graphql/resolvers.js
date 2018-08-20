@@ -145,9 +145,10 @@ export default {
       let result = await Prop.deleteOne({ _id });
       return result.n === 1;
     },
-    editProp: async (parent, { _id, name, proptype }, { Prop, Component }) => {
-      let prop = await Prop.findOneAndUpdate({ _id }, { name, proptype });
-      return prepare(prop);
+    editProp: async (parent, { _id, name, proptype }, { Prop }) => {
+      await Prop.findOneAndUpdate({ _id }, { name, proptype });
+      const prop = await Prop.find({ _id });
+      return prepare(prop[0]);
     }
   }
 };
