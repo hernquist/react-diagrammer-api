@@ -52,6 +52,7 @@ export default `
     }
     
     type Prop {
+        _id: String!
         componentId: String!
         name: String!
         proptype: PropType!
@@ -93,5 +94,6 @@ export default `
         toggleComponentStyle(_id: String!): Component
         editComponentName(_id: String!, name: String!): Component
         addProp(prop: InputProp): Component
+        deleteProp(_id: String): Boolean
     }
 `;

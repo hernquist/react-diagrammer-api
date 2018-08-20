@@ -121,7 +121,7 @@ export default {
       let component = await Component(args).save();
       return prepare(component);
     },
-    toggleComponentStyle: async(parent, { _id }, { Component }) => {
+    toggleComponentStyle: async (parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
       const style = component[0].style === 'container' ?
         'presentational' : 'container';
@@ -130,18 +130,22 @@ export default {
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]); 
     },
-    editComponentName: async(parent, {_id, name}, { Component }) => {
+    editComponentName: async (parent, {_id, name}, { Component }) => {
       let component = await Component.find({ _id });
       component[0].name = name;
       await Component.update({ _id }, { name });
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]);
     },
-    addProp: async(parent, { prop }, { Prop, Component }) => {
+    addProp: async (parent, { prop }, { Prop, Component }) => {
       await Prop(prop).save();
       const _id = prop.componentId;
       let component = await Component.find({ _id });
       return prepare(component[0])
+    },
+    deleteProp: async (parent, { _id}, { Prop }) => {
+      let result = await Prop.deleteOne({ _id })
+      return result.n === 1
     }
   }
 };
