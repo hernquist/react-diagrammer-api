@@ -62,10 +62,17 @@ export default {
     propsByComponentId: async (parent, {componentId}, { Prop }) => {
       const props = await Prop.find({ componentId });
       return props.map(prop => prepare(prop)); 
+    },
+    stateByComponentId: async (parent, { componentId }, { State }) => {
+      const state = await State.find({ componentId });
+      return state.map(statefield => prepare(statefield));
     }
   },
   Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
-  Component: { props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id })},
+  Component: { 
+    props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id }),
+    state: async({ _id }, args, { State }) => await State.find({ componentId: _id })
+  },
   Mutation: {
     login: async (parent, { email, password }, context) => {
       const { User } = context;
@@ -149,6 +156,21 @@ export default {
       await Prop.findOneAndUpdate({ _id }, { name, proptype });
       const prop = await Prop.find({ _id });
       return prepare(prop[0]);
-    }
+    },
+    addState: async (parent, { state }, { State, Component }) => {
+      await State(state).save();
+      const _id = state.componentId;
+      let component = await Component.find({ _id });
+      return prepare(component[0]);
+    },
+    deleteState: async (parent, { _id }, { State}) => {
+      let result = await State.deleteOne({ _id });
+      return result.n === 1;
+    },
+    editState: async (parent, { _id, name, statetype }, { State}) => {
+      await State.findOneAndUpdate({ _id }, { name, statetype });
+      const state = await State.find({ _id });
+      return prepare(state[0]);
+    },
   }
 };

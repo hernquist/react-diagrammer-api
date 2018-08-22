@@ -20,6 +20,14 @@ export default `
         object
         array
     }
+
+    enum StateType {
+        boolean
+        number
+        string
+        object
+        array
+    }
     
     type User {
         _id: String!
@@ -46,7 +54,7 @@ export default `
         style: ComponentType!
         placement: Placement!
         children: [String]
-        state: [String]
+        state: [State]
         props: [Prop]
         callbacks: [String]
     }
@@ -64,6 +72,19 @@ export default `
         proptype: PropType!
     }
 
+    type State {
+        _id: String!
+        componentId: String!
+        name: String!
+        statetype: StateType!
+    }
+
+    input InputState {
+        componentId: String!
+        name: String!
+        statetype: StateType!
+    }
+
     type Query {
         getAuthUser: User
         users: [User!]!
@@ -74,6 +95,7 @@ export default `
         projectsByUserId(userId: String!): [Project!]!
         componentsByProjectId(projectId: String!): [Component]
         propsByComponentId(componentId: String!): [Prop]
+        stateByComponentId(componentId: String!): [State]
     }
 
     type Mutation {
@@ -87,7 +109,7 @@ export default `
             style: ComponentType!,
             placement: Placement!, 
             children: [String],
-            state: [String],
+            state: [InputState],
             props: [InputProp],
             callbacks: [String]
         ) : Component!
@@ -96,5 +118,8 @@ export default `
         addProp(prop: InputProp): Component
         deleteProp(_id: String): Boolean
         editProp(_id: String, name: String, proptype: PropType): Prop
+        addState(state: InputState): Component
+        deleteState(_id: String): Boolean
+        editState(_id: String, name: String, statetype: StateType): State
     }
 `;
