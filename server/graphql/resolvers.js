@@ -62,10 +62,17 @@ export default {
     propsByComponentId: async (parent, {componentId}, { Prop }) => {
       const props = await Prop.find({ componentId });
       return props.map(prop => prepare(prop)); 
+    },
+    stateByComponentId: async (parent, { componentId }, { State }) => {
+      const state = await State.find({ componentId });
+      return state.map(statefield => prepare(statefield));
     }
   },
   Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
-  Component: { props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id })},
+  Component: { 
+    props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id }),
+    state: async({ _id }, args, { State }) => await State.find({ componentId: _id })
+  },
   Mutation: {
     login: async (parent, { email, password }, context) => {
       const { User } = context;
@@ -121,7 +128,7 @@ export default {
       let component = await Component(args).save();
       return prepare(component);
     },
-    toggleComponentStyle: async(parent, { _id }, { Component }) => {
+    toggleComponentStyle: async (parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
       const style = component[0].style === 'container' ?
         'presentational' : 'container';
@@ -130,18 +137,40 @@ export default {
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]); 
     },
-    editComponentName: async(parent, {_id, name}, { Component }) => {
-      let component = await Component.find({ _id });
-      component[0].name = name;
+    editComponentName: async (parent, {_id, name}, { Component }) => {
       await Component.update({ _id }, { name });
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]);
     },
-    addProp: async(parent, { prop }, { Prop, Component }) => {
+    addProp: async (parent, { prop }, { Prop, Component }) => {
       await Prop(prop).save();
       const _id = prop.componentId;
       let component = await Component.find({ _id });
-      return prepare(component[0])
-    }
+      return prepare(component[0]);
+    },
+    deleteProp: async (parent, { _id }, { Prop }) => {
+      let result = await Prop.deleteOne({ _id });
+      return result.n === 1;
+    },
+    editProp: async (parent, { _id, name, proptype }, { Prop }) => {
+      await Prop.findOneAndUpdate({ _id }, { name, proptype });
+      const prop = await Prop.find({ _id });
+      return prepare(prop[0]);
+    },
+    addState: async (parent, { state }, { State, Component }) => {
+      await State(state).save();
+      const _id = state.componentId;
+      let component = await Component.find({ _id });
+      return prepare(component[0]);
+    },
+    deleteState: async (parent, { _id }, { State}) => {
+      let result = await State.deleteOne({ _id });
+      return result.n === 1;
+    },
+    editState: async (parent, { _id, name, statetype }, { State}) => {
+      await State.findOneAndUpdate({ _id }, { name, statetype });
+      const state = await State.find({ _id });
+      return prepare(state[0]);
+    },
   }
 };

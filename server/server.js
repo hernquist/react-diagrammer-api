@@ -49,6 +49,12 @@ const Prop = mongoose.model("Prop", {
     proptype: String
 });
 
+const State = mongoose.model("State", {
+    componentId: String,
+    name: String,
+    statetype: String
+});
+
 const app = express();
 const dev = process.env.NODE_ENV === "development";
 
@@ -57,24 +63,24 @@ const homePath = "/graphiql";
 // auth middleware
 const SECRET = "qwertyuiopsdflkjsdlfkj";
 const addUserMW = async req => {
-    // const token = req.headers["x-token"] || req.headers.authorization;
-    const token = req.headers["x-token"];
-    console.log("[addUserMW] token:", token); 
-    const message = req.headers.referer;
-    const signUp = (typeof message === "string" && message.includes("signUp"))
+  // const token = req.headers["x-token"] || req.headers.authorization;
+  const token = req.headers["x-token"];
+  console.log("[addUserMW] token:", token); 
+  const message = req.headers.referer;
+  const signUp = (typeof message === "string" && message.includes("signUp"))
 
-    try {
-        const { user } = await jwt.verify(token, SECRET);
-        console.log("[addUserMW] user:", user);
-        req.user = user;
-    } catch (err) {
-        if (signUp) {
-            console.log("SignUp");
-        } else {
-            console.log("Error:", err);
-        }
+  try {
+    const { user } = await jwt.verify(token, SECRET);
+    console.log("[addUserMW] user:", user);
+    req.user = user;
+  } catch (err) {
+    if (signUp) {
+      console.log("SignUp");
+    } else {
+      console.log("Error:", err);
     }
-    req.next();
+  }
+  req.next();
 };
 
 app.use(addUserMW);
@@ -83,28 +89,29 @@ app.use(morgan("dev"));
 app.use(cors("*"));
 
 app.use(
-    homePath,
-    graphiqlExpress({
-        endpointURL: "/graphql"
-    })
+  homePath,
+  graphiqlExpress({
+    endpointURL: "/graphql"
+  })
 );
 
 app.use(
-    "/graphql",
-    bodyParser.json(),
-    graphqlExpress((req, res) => {
-        return {
-            schema,
-            context: {
-                User,
-                Project,
-                Component,
-                Prop,
-                SECRET,
-                user: req.user
-            }
-        };
-    })
+  "/graphql",
+  bodyParser.json(),
+  graphqlExpress((req, res) => {
+    return {
+      schema,
+      context: {
+        User,
+        Project,
+        Component,
+        Prop,
+        State,
+        SECRET,
+        user: req.user
+      }
+    };
+  })
 );
 
 app.use("/", (req, res) => {
