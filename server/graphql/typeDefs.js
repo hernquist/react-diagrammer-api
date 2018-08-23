@@ -90,16 +90,27 @@ export default `
     type: String
   }
 
-  type setStateParams {
-    set
+  input InputArgument {
+    name: String
+    type: String
   }
 
-  type CallBack {
+  type SetStateParams {
+    stateField: String
+    stateChange: String
+  }
+
+  input InputSetStateParams {
+    stateField: String
+    stateChange: String
+  }
+
+  type Callback {
     _id: String!
     componentId: String!
     name: String!
     arguments: [Argument]
-    setState: [String, String]
+    setState: [SetStateParams]
     description: String
   }
 
@@ -143,12 +154,11 @@ export default `
     addCallback(
       componentId: String!
       name: String!
-      argument: [Argument],
-      
+      argument: InputArgument
+      setState: InputSetStateParams
       description: String
     ): Component
     deleteState(_id: String): Boolean
     editState(_id: String, name: String, statetype: StateType): State
   }
 `;
-[]
