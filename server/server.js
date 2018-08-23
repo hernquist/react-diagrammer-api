@@ -44,16 +44,30 @@ const Component = mongoose.model("Component", {
 })
 
 const Prop = mongoose.model("Prop", {
-    componentId: String,
-    name: String,
-    proptype: String
+  componentId: String,
+  name: String,
+  proptype: String
 });
 
 const State = mongoose.model("State", {
-    componentId: String,
-    name: String,
-    statetype: String
+  componentId: String,
+  name: String,
+  statetype: String
 });
+
+const Callback = mongoose.model("Mongoose", {
+  componentId: String,
+  name: String,
+  arguments: [{
+    name: String,
+    type: String
+  }],
+  setState: [{
+    stateField: String,
+    stateChange: String
+  }],
+  description: String
+})
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
@@ -107,6 +121,7 @@ app.use(
         Component,
         Prop,
         State,
+        Callback,
         SECRET,
         user: req.user
       }
