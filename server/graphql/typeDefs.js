@@ -152,13 +152,19 @@ export default `
     deleteState(_id: String): Boolean
     editState(_id: String, name: String, statetype: StateType): State
     addCallback(
-      componentId: String!
-      name: String!
-      argument: InputArgument
-      setState: InputSetStateParams
-      description: String
-    ): Component
+      componentId: String!,
+      name: String!,
+      argument: InputArgument,
+      setState: InputSetStateParams,
+      description: String,
+    ): String
     deleteState(_id: String): Boolean
-    editState(_id: String, name: String, statetype: StateType): State
+    editState(_id: String,
+      componentId: String!,
+      name: String!,
+      argument: InputArgument,
+      setState: InputSetStateParams,
+      description: String
+    ): Callback
   }
 `;
