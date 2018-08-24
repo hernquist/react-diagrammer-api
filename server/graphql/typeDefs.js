@@ -160,8 +160,8 @@ export default `
     deleteState(_id: String): Boolean
     editState(_id: String, name: String, statetype: StateType): State
     addCallback(callback: InputCallback): Callback
-    deleteState(_id: String): Boolean
-    editState(_id: String,
+    deleteCallback(_id: String): Boolean
+    editCallback(_id: String,
       componentId: String!,
       name: String!,
       arguments: [InputArgument],

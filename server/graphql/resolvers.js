@@ -176,13 +176,14 @@ export default {
       const state = await State.find({ _id });
       return prepare(state[0]);
     },
-    addCallback: async (parent, args, { Callback, Component }) => {
-      console.log('args', args)
-      let result = await Callback(args.callback).save();
-      console.log('addCallback:', result);
-      const { _id } = result;
-      const cb = await Callback.find({ _id })
+    addCallback: async (parent, { callback}, { Callback }) => {
+      let result = await Callback(callback).save();
+      const cb = await Callback.find({ _id: result._id })
       return prepare(cb[0]);
     },
+    deleteCallback: async (parent, { _id }, { Callback }) => {
+      let result = await Callback.deleteOne({ _id });
+      return result.n === 1;
+    }
   }
 };
