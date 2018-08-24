@@ -6,60 +6,23 @@ import mongoose from "mongoose";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import schema from './graphql/schema';
+import {
+  user,
+  project,
+  component,
+  prop,
+  state,
+  callback
+} from './models';
 
 mongoose.connect("mongodb://localhost/react-diagrammer");
 
-const User = mongoose.model("User", { 
-    email: String,
-    name: String,
-    password: String
-});
-
-const Project = mongoose.model("Project", { 
-    name: String, 
-    userId: String,
-    description: String, 
-    dateCreated: Date, 
-    dateVisited: Date
-});
-
-const Component = mongoose.model("Component", {
-    name: String,
-    projectId: String,
-    style: String,
-    iteration: Number,
-    placement: String,
-    children: [String],
-    state: [String],
-    props: [String],
-    callbacks: [String]
-})
-
-const Prop = mongoose.model("Prop", {
-  componentId: String,
-  name: String,
-  proptype: String
-});
-
-const State = mongoose.model("State", {
-  componentId: String,
-  name: String,
-  statetype: String
-});
-
-const Callback = mongoose.model("Callback", {
-  componentId: String,
-  name: String,
-  functionArgs: [{
-    name: String,
-    typeName: String
-  }],
-  setState: [{
-    stateField: String,
-    stateChange: String
-  }],
-  description: String
-})
+const User = mongoose.model("User", user);
+const Project = mongoose.model("Project", project); 
+const Component = mongoose.model("Component", component);
+const Prop = mongoose.model("Prop", prop);
+const State = mongoose.model("State", state);
+const Callback = mongoose.model("Callback", callback);
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
@@ -68,16 +31,16 @@ const homePath = "/graphiql";
 
 // auth middleware
 const SECRET = "qwertyuiopsdflkjsdlfkj";
-const addUserMW = async req => {
+const addUserMiddleware = async req => {
   // const token = req.headers["x-token"] || req.headers.authorization;
   const token = req.headers["x-token"];
-  console.log("[addUserMW] token:", token); 
+  console.log("[addUserMiddleware] token:", token); 
   const message = req.headers.referer;
   const signUp = (typeof message === "string" && message.includes("signUp"))
 
   try {
     const { user } = await jwt.verify(token, SECRET);
-    console.log("[addUserMW] user:", user);
+    console.log("[addUserMiddleware] user:", user);
     req.user = user;
   } catch (err) {
     if (signUp) {
@@ -89,8 +52,7 @@ const addUserMW = async req => {
   req.next();
 };
 
-app.use(addUserMW);
-
+app.use(addUserMiddleware);
 app.use(morgan("dev"));
 app.use(cors("*"));
 
