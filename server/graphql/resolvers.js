@@ -4,7 +4,6 @@ import { Kind } from "graphql/language";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
-import { resultKeyNameFromField } from "../../node_modules/apollo-utilities";
 
 const prepare = obj => {
   obj._id = obj._id.toString();

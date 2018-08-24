@@ -4,12 +4,11 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
+import jwt from "jsonwebtoken";
+import { makeExecutableSchema } from "graphql-tools";
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
 
-import jwt from "jsonwebtoken";
-
-import { makeExecutableSchema } from "graphql-tools";
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -40,6 +39,7 @@ const Component = mongoose.model("Component", {
     placement: String,
     children: [String],
     state: [String],
+    props: [String],
     callbacks: [String]
 })
 
@@ -55,12 +55,12 @@ const State = mongoose.model("State", {
   statetype: String
 });
 
-const Callback = mongoose.model("Mongoose", {
+const Callback = mongoose.model("Callback", {
   componentId: String,
   name: String,
-  arguments: [{
+  functionArgs: [{
     name: String,
-    type: String
+    typeName: String
   }],
   setState: [{
     stateField: String,

@@ -85,14 +85,14 @@ export default `
     statetype: StateType!
   }
 
-  type Argument {
+  type FunctionArg {
     name: String
-    type: String
+    typeName: String
   }
 
-  input InputArgument {
+  input InputFunctionArg {
     name: String
-    type: String
+    typeName: String
   }
 
   type SetStateParams {
@@ -109,7 +109,7 @@ export default `
     _id: String!
     componentId: String!
     name: String!
-    arguments: [Argument]
+    functionArgs: [FunctionArg]
     setState: [SetStateParams]
     description: String
   }
@@ -117,7 +117,7 @@ export default `
   input InputCallback {
     componentId: String!
     name: String!
-    arguments: [InputArgument]
+    functionArgs: [InputFunctionArg]
     setState: [InputSetStateParams]
     description: String
   }
@@ -164,7 +164,7 @@ export default `
     editState(_id: String,
       componentId: String!,
       name: String!,
-      arguments: [InputArgument],
+      functionArgs: [InputFunctionArg],
       setState: [InputSetStateParams],
       description: String
     ): Callback
