@@ -56,7 +56,7 @@ export default `
     children: [String]
     state: [State]
     props: [Prop]
-    callbacks: [String]
+    callbacks: [Callback]
   }
   
   type Prop {
@@ -114,6 +114,14 @@ export default `
     description: String
   }
 
+  input InputCallback {
+    componentId: String!
+    name: String!
+    arguments: [InputArgument]
+    setState: [InputSetStateParams]
+    description: String
+  }
+
   type Query {
     getAuthUser: User
     users: [User!]!
@@ -141,7 +149,7 @@ export default `
       children: [String],
       state: [InputState],
       props: [InputProp],
-      callbacks: [String]
+      callbacks: [InputCallback]
     ) : Component!
     toggleComponentStyle(_id: String!): Component
     editComponentName(_id: String!, name: String!): Component
@@ -151,19 +159,13 @@ export default `
     addState(state: InputState): Component
     deleteState(_id: String): Boolean
     editState(_id: String, name: String, statetype: StateType): State
-    addCallback(
-      componentId: String!,
-      name: String!,
-      argument: InputArgument,
-      setState: InputSetStateParams,
-      description: String,
-    ): String
+    addCallback(callback: InputCallback): Callback
     deleteState(_id: String): Boolean
     editState(_id: String,
       componentId: String!,
       name: String!,
-      argument: InputArgument,
-      setState: InputSetStateParams,
+      arguments: [InputArgument],
+      setState: [InputSetStateParams],
       description: String
     ): Callback
   }

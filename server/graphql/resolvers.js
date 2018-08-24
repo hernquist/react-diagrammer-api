@@ -75,7 +75,8 @@ export default {
   Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
   Component: { 
     props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id }),
-    state: async({ _id }, args, { State }) => await State.find({ componentId: _id })
+    state: async({ _id }, args, { State }) => await State.find({ componentId: _id }),
+    callbacks: async ({ _id }, args, { Callback }) => await Callback.find({ componentId: _id })
   },
   Mutation: {
     login: async (parent, { email, password }, context) => {
@@ -175,6 +176,14 @@ export default {
       await State.findOneAndUpdate({ _id }, { name, statetype });
       const state = await State.find({ _id });
       return prepare(state[0]);
+    },
+    addCallback: async (parent, args, { Callback, Component }) => {
+      console.log('args', args)
+      let result = await Callback(args.callback).save();
+      console.log('addCallback:', result);
+      const { _id } = result;
+      const cb = await Callback.find({ _id })
+      return prepare(cb[0]);
     },
   }
 };
