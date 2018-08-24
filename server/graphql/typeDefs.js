@@ -109,7 +109,7 @@ export default `
     _id: String!
     componentId: String!
     name: String!
-    arguments: [Argument]
+    functionArgs: [Argument]
     setState: [SetStateParams]
     description: String
   }
@@ -117,7 +117,7 @@ export default `
   input InputCallback {
     componentId: String!
     name: String!
-    arguments: [InputArgument]
+    functionArgs: [InputArgument]
     setState: [InputSetStateParams]
     description: String
   }
@@ -161,10 +161,10 @@ export default `
     editState(_id: String, name: String, statetype: StateType): State
     addCallback(callback: InputCallback): Callback
     deleteCallback(_id: String): Boolean
-    editCallback(_id: String,
-      componentId: String!,
-      name: String!,
-      arguments: [InputArgument],
+    editCallback(
+      _id: String!, 
+      name: String,
+      functionArgs: [InputArgument],
       setState: [InputSetStateParams],
       description: String
     ): Callback

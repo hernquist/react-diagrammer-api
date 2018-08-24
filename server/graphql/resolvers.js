@@ -184,6 +184,19 @@ export default {
     deleteCallback: async (parent, { _id }, { Callback }) => {
       let result = await Callback.deleteOne({ _id });
       return result.n === 1;
+    },
+    editCallback: async (parent, { _id, name, description, setState, functionArgs }, { Callback }) => {
+      let result = await Callback.findOneAndUpdate(
+        { _id }, 
+        { 
+          name, 
+          description, 
+          setState, 
+          functionArgs 
+        }
+      );
+      const cb = await Callback.find({ _id: result._id });
+      return prepare(cb[0]);
     }
   }
 };
