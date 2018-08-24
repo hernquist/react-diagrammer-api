@@ -5,15 +5,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { makeExecutableSchema } from "graphql-tools";
-import typeDefs from "./graphql/typeDefs";
-import resolvers from "./graphql/resolvers";
-
-
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers
-});
+import schema from './graphql/schema';
 
 mongoose.connect("mongodb://localhost/react-diagrammer");
 
