@@ -58,7 +58,7 @@ const State = mongoose.model("State", {
 const Callback = mongoose.model("Callback", {
   componentId: String,
   name: String,
-  functionArgs: [{
+  arguments: [{
     name: String,
     typeName: String
   }],
