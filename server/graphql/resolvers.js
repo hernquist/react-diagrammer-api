@@ -67,7 +67,7 @@ export default {
       return state.map(statefield => prepare(statefield));
     },
     callbacksByComponentId: async (parent, { componentId }, { Callback }) => {
-      const callbacks = await State.find({ componentId });
+      const callbacks = await Callback.find({ componentId });
       return callbacks.map(callback => prepare(callback));
     },
   },
