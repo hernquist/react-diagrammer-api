@@ -66,7 +66,11 @@ export default {
     stateByComponentId: async (parent, { componentId }, { State }) => {
       const state = await State.find({ componentId });
       return state.map(statefield => prepare(statefield));
-    }
+    },
+    callbacksByComponentId: async (parent, { componentId }, { Callback }) => {
+      const callbacks = await State.find({ componentId });
+      return callbacks.map(callback => prepare(callback));
+    },
   },
   Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
   Component: { 
