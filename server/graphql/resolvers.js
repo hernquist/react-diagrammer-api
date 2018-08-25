@@ -131,7 +131,12 @@ export default {
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]); 
     },
-    editComponentName: async (parent, {_id, name}, { Component }) => {
+    addChild: async (parent, { _id, childId }, { Component }) => {
+      const component = await Component.find({ _id });
+      const children = [...component[0].children, childId];
+      return await Component.update({ _id }, { children });
+    },
+    editComponentName: async (parent, { _id, name }, { Component }) => {
       await Component.update({ _id }, { name });
       const newComponent = await Component.find({ _id });
       return prepare(newComponent[0]);
