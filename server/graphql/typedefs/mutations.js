@@ -11,6 +11,7 @@ export default `
       placement: Placement!
     ): Component!
     toggleComponentStyle(_id: String!): Component
+    addChild(_id: String!, childId: String): Boolean
     editComponentName(_id: String!, name: String!): Component
     addProp(prop: InputProp): Component
     deleteProp(_id: String): Boolean
