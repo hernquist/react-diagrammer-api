@@ -36,7 +36,7 @@ export const state =  {
   statetype: String
 };
 
-export const callback = {
+export const cb = {
   componentId: String,
   name: String,
   functionArgs: [{

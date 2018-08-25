@@ -116,16 +116,6 @@ export default {
         dateVisited: date
       });
       const project = await Project(body).save();
-      const index = {
-        name: 'index',
-        iteration: 0,
-        projectId: project._id,
-        style: 'container',
-        placement: 'root',
-        state: [''],
-        callbacks: ['']
-      }
-      const component = await Component(index).save();
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {

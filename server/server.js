@@ -6,14 +6,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import schema from './graphql/schema';
-import {
-  user,
-  project,
-  component,
-  prop,
-  state,
-  callback
-} from './models';
+import { user, project, component, prop, state, cb } from './models/models';
 
 mongoose.connect("mongodb://localhost/react-diagrammer");
 
@@ -22,18 +15,16 @@ const Project = mongoose.model("Project", project);
 const Component = mongoose.model("Component", component);
 const Prop = mongoose.model("Prop", prop);
 const State = mongoose.model("State", state);
-const Callback = mongoose.model("Callback", callback);
+const Callback = mongoose.model("Callback", cb);
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
-
 const homePath = "/graphiql";
 
 // auth middleware
 const SECRET = "qwertyuiopsdflkjsdlfkj";
 const addUserMiddleware = async req => {
-  // const token = req.headers["x-token"] || req.headers.authorization;
-  const token = req.headers["x-token"];
+  const token = req.headers["x-token"];   // || req.headers.authorization;
   console.log("[addUserMiddleware] token:", token); 
   const message = req.headers.referer;
   const signUp = (typeof message === "string" && message.includes("signUp"))
@@ -46,7 +37,7 @@ const addUserMiddleware = async req => {
     if (signUp) {
       console.log("SignUp");
     } else {
-      console.log("Error:", err);
+      console.log("Error-1:", err);
     }
   }
   req.next();
@@ -66,7 +57,7 @@ app.use(
 app.use(
   "/graphql",
   bodyParser.json(),
-  graphqlExpress((req, res) => {
+  graphqlExpress((req) => {
     return {
       schema,
       context: {
@@ -83,7 +74,7 @@ app.use(
   })
 );
 
-app.use("/", (req, res) => {
+app.use("/", (_, res) => {
   res.json("Go to /graphiql to test your queries and mutations!");
 });
 

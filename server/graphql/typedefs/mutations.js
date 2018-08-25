@@ -8,11 +8,7 @@ export default `
       projectId: String!,
       iteration: Int!,
       style: ComponentType!,
-      placement: Placement!,
-      children: [String],
-      state: [InputState],
-      props: [InputProp],
-      callbacks: [InputCallback]
+      placement: Placement!
     ): Component!
     toggleComponentStyle(_id: String!): Component
     editComponentName(_id: String!, name: String!): Component

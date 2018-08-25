@@ -8,7 +8,6 @@ export default `
     root
     unassigned
     child
-    end
   }
 
   enum PropType {
