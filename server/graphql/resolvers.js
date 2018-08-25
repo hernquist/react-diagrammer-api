@@ -67,7 +67,7 @@ export default {
       return state.map(statefield => prepare(statefield));
     },
     callbacksByComponentId: async (parent, { componentId }, { Callback }) => {
-      const callbacks = await State.find({ componentId });
+      const callbacks = await Callback.find({ componentId });
       return callbacks.map(callback => prepare(callback));
     },
   },
@@ -116,16 +116,6 @@ export default {
         dateVisited: date
       });
       const project = await Project(body).save();
-      const index = {
-        name: 'index',
-        iteration: 0,
-        projectId: project._id,
-        style: 'container',
-        placement: 'root',
-        state: [''],
-        callbacks: ['']
-      }
-      const component = await Component(index).save();
       return prepare(project);
     },
     createComponent: async (parent, args, { Component }) => {
@@ -176,13 +166,27 @@ export default {
       const state = await State.find({ _id });
       return prepare(state[0]);
     },
-    addCallback: async (parent, args, { Callback, Component }) => {
-      console.log('args', args)
-      let result = await Callback(args.callback).save();
-      console.log('addCallback:', result);
-      const { _id } = result;
-      const cb = await Callback.find({ _id })
+    addCallback: async (parent, { callback}, { Callback }) => {
+      let result = await Callback(callback).save();
+      const cb = await Callback.find({ _id: result._id })
       return prepare(cb[0]);
     },
+    deleteCallback: async (parent, { _id }, { Callback }) => {
+      let result = await Callback.deleteOne({ _id });
+      return result.n === 1;
+    },
+    editCallback: async (parent, { _id, name, description, setState, functionArgs }, { Callback }) => {
+      let result = await Callback.findOneAndUpdate(
+        { _id }, 
+        { 
+          name, 
+          description, 
+          setState, 
+          functionArgs 
+        }
+      );
+      const cb = await Callback.find({ _id: result._id });
+      return prepare(cb[0]);
+    }
   }
 };
