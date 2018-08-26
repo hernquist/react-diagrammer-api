@@ -10,6 +10,7 @@ export default `
       style: ComponentType!,
       placement: Placement!
     ): Component!
+    deleteProject(_id: String!): Boolean
     toggleComponentStyle(_id: String!): Component
     addChild(_id: String!, childId: String): Boolean
     editComponentName(_id: String!, name: String!): Component

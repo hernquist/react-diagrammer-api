@@ -109,7 +109,7 @@ export default {
       context.token = token;
       return token;
     },
-    createProject: async (parent, args, { Project, Component }) => {
+    createProject: async (parent, args, { Project }) => {
       const date = new Date();
       let body = Object.assign({}, args, {
         dateCreated: date,
@@ -117,6 +117,10 @@ export default {
       });
       const project = await Project(body).save();
       return prepare(project);
+    },
+    deleteProject: async (parent, { _id }, { Project } ) => {
+      let result = await Project.deleteOne({ _id });
+      return result.n === 1;
     },
     createComponent: async (parent, args, { Component }) => {
       let component = await Component(args).save();
