@@ -126,6 +126,25 @@ export default {
       let component = await Component(args).save();
       return prepare(component);
     },
+    copyComponent: async (parent, args, { Component, State }) => {
+      //not the right approach
+      args.iteration = args.iteration + 1;
+      console.log('args', args);
+      let component = await Component(args).save();
+      let { _id } = component;
+      let state = args.state.map(stateField => {
+        stateField.componentId = _id
+        return stateField
+      });
+      console.log('state', state);
+      // let updatedState = state.map(stateField => {
+      //   return await State(stateField).save()
+      // });(
+      const updatedState = await State.insertMany(state);
+      component.state = updatedState;
+      console.log('component', component)
+      return prepare(component);
+    },
     toggleComponentStyle: async (parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
       const style = component[0].style === 'container' ?

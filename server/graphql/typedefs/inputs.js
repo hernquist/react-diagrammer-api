@@ -11,6 +11,10 @@ export default `
     statetype: StateType!
   }
 
+  input InputStateList {
+    states: [InputState]
+  }
+
   input InputArgument {
     name: String
     typeName: String

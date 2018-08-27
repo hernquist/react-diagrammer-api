@@ -10,6 +10,15 @@ export default `
       style: ComponentType!,
       placement: Placement!
     ): Component!
+    copyComponent(
+      name: String!,
+      projectId: String!,
+      iteration: Int!,
+      style: ComponentType!,
+      placement: Placement!,
+      children: [String],
+      state: [InputState]
+    ): Component!
     deleteProject(_id: String!): Boolean
     toggleComponentStyle(_id: String!): Component
     addChild(_id: String!, childId: String): Boolean

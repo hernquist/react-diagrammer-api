@@ -19,7 +19,11 @@ export const component = {
   iteration: Number,
   placement: String,
   children: [String],
-  state: [String],
+  state: [{
+    componentId: String,
+    name: String,
+    statetype: String
+  }],
   props: [String],
   callbacks: [String]
 };
