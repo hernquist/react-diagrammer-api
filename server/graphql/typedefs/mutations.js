@@ -17,7 +17,9 @@ export default `
       style: ComponentType!,
       placement: Placement!,
       children: [String],
-      state: [InputState]
+      state: [InputState],
+      props: [InputProp],
+      callbacks: [InputCallback]
     ): Component!
     deleteProject(_id: String!): Boolean
     toggleComponentStyle(_id: String!): Component

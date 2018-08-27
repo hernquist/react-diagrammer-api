@@ -12,32 +12,16 @@ export const project = {
   dateVisited: Date
 };
 
-export const component = {
+export const state =  {
+  componentId: String,
   name: String,
-  projectId: String,
-  style: String,
-  iteration: Number,
-  placement: String,
-  children: [String],
-  state: [{
-    componentId: String,
-    name: String,
-    statetype: String
-  }],
-  props: [String],
-  callbacks: [String]
+  statetype: String
 };
 
 export const prop = {
   componentId: String,
   name: String,
   proptype: String
-};
-
-export const state =  {
-  componentId: String,
-  name: String,
-  statetype: String
 };
 
 export const cb = {
@@ -53,3 +37,16 @@ export const cb = {
   }],
   description: String
 };
+
+export const component = {
+  name: String,
+  projectId: String,
+  style: String,
+  iteration: Number,
+  placement: String,
+  children: [String],
+  state: [state],
+  props: [prop],
+  callbacks: [cb]
+};
+

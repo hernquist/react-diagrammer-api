@@ -126,22 +126,39 @@ export default {
       let component = await Component(args).save();
       return prepare(component);
     },
-    copyComponent: async (parent, args, { Component, State }) => {
+    copyComponent: async (parent, args, { Component, State, Prop, Callback }) => {
       //not the right approach
       args.iteration = args.iteration + 1;
       console.log('args', args);
       let component = await Component(args).save();
-      let { _id } = component;
-      let state = args.state.map(stateField => {
-        stateField.componentId = _id
+      let { id } = component;
+      
+      let state = args.state ? args.state.map(stateField => {
+        stateField.componentId = id
+        delete statefield._id;
+        delete statefield.__typename;
         return stateField
-      });
+      }) : [];
+      let props = args.props ? args.props.map(prop => {
+        prop.componentId = id
+        return prop
+      }): []; 
+      let callbacks =args.callbacks ? args.callbacks.map(cb => {
+        cb.componentId = id
+        return cb
+      }) : [];
       console.log('state', state);
-      // let updatedState = state.map(stateField => {
-      //   return await State(stateField).save()
-      // });(
       const updatedState = await State.insertMany(state);
-      component.state = updatedState;
+      const updatedProps = await Prop.insertMany(props);
+      const updatedCallbacks = await Callback.insertMany(callbacks);
+
+      component.state = updatedState.map(state => {
+        delete state._id;
+        delete state.__typename;
+        return state;
+      });
+      component.props = updatedProps;
+      component.callbacks = updatedCallbacks;
       console.log('component', component)
       return prepare(component);
     },
