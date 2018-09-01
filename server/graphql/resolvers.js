@@ -73,9 +73,9 @@ export default {
   },
   Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
   Component: { 
-    props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id }),
-    state: async({ _id }, args, { State }) => await State.find({ componentId: _id }),
-    callbacks: async ({ _id }, args, { Callback }) => await Callback.find({ componentId: _id })
+    props: async({ cloneId }, args, { Prop }) => await Prop.find({ componentId: cloneId }),
+    state: async({ cloneId }, args, { State }) => await State.find({ componentId: cloneId }),
+    callbacks: async ({ cloneId }, args, { Callback }) => await Callback.find({ componentId: cloneId })
   },
   Mutation: {
     login: async (parent, { email, password }, context) => {
