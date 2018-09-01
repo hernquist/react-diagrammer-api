@@ -12,11 +12,11 @@ export default `
     copyComponent(
       name: String!,
       projectId: String!,
+      cloneId: String!
       iteration: Int!,
       style: ComponentType!,
       placement: Placement!,
       children: [String],
-      cloneId: String!
     ): Component!
     deleteProject(_id: String!): Boolean
     toggleComponentStyle(_id: String!): Component
