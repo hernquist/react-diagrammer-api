@@ -10,12 +10,12 @@ import { user, project, component, prop, state, cb } from './models/models';
 
 mongoose.connect("mongodb://localhost/react-diagrammer");
 
-const User = mongoose.model("User", user);
-const Project = mongoose.model("Project", project); 
+const User      = mongoose.model("User", user);
+const Project   = mongoose.model("Project", project); 
 const Component = mongoose.model("Component", component);
-const Prop = mongoose.model("Prop", prop);
-const State = mongoose.model("State", state);
-const Callback = mongoose.model("Callback", cb);
+const Prop      = mongoose.model("Prop", prop);
+const State     = mongoose.model("State", state);
+const Callback  = mongoose.model("Callback", cb);
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";

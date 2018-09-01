@@ -41,6 +41,7 @@ export const cb = {
 export const component = {
   name: String,
   projectId: String,
+  cloneId: String,
   style: String,
   iteration: Number,
   placement: String,
