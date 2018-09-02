@@ -6,10 +6,22 @@ export default `
     createComponent(
       name: String!,
       projectId: String!,
-      iteration: Int!,
       style: ComponentType!,
       placement: Placement!
     ): Component!
+    copyComponent(
+      name: String!,
+      projectId: String!,
+      cloneId: String!
+      iteration: Int!,
+      style: ComponentType!,
+      placement: Placement!,
+      children: [String],
+    ): Component!
+    copyChildren(
+      childrenData: [InputChildrenData]
+    ): [Component]!
+    deleteProject(_id: String!): Boolean
     toggleComponentStyle(_id: String!): Component
     addChild(_id: String!, childId: String): Boolean
     editComponentName(_id: String!, name: String!): Component

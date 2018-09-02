@@ -73,9 +73,9 @@ export default {
   },
   Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
   Component: { 
-    props: async({ _id }, args, { Prop }) => await Prop.find({ componentId: _id }),
-    state: async({ _id }, args, { State }) => await State.find({ componentId: _id }),
-    callbacks: async ({ _id }, args, { Callback }) => await Callback.find({ componentId: _id })
+    props: async({ cloneId }, args, { Prop }) => await Prop.find({ componentId: cloneId }),
+    state: async({ cloneId }, args, { State }) => await State.find({ componentId: cloneId }),
+    callbacks: async ({ cloneId }, args, { Callback }) => await Callback.find({ componentId: cloneId })
   },
   Mutation: {
     login: async (parent, { email, password }, context) => {
@@ -109,7 +109,7 @@ export default {
       context.token = token;
       return token;
     },
-    createProject: async (parent, args, { Project, Component }) => {
+    createProject: async (parent, args, { Project }) => {
       const date = new Date();
       let body = Object.assign({}, args, {
         dateCreated: date,
@@ -118,9 +118,47 @@ export default {
       const project = await Project(body).save();
       return prepare(project);
     },
+    deleteProject: async (parent, { _id }, { Project } ) => {
+      let result = await Project.deleteOne({ _id });
+      return result.n === 1;
+    },
     createComponent: async (parent, args, { Component }) => {
+      const component = await Component(args).save();
+      const { _id } = component;
+      const updatedComponent = await Component.update({ _id }, { cloneId: _id, iteration: 0} )
+      console.log(updatedComponent)
+      const returnComponent = await Component.find({ _id })
+      return prepare(returnComponent[0]);
+    },
+    copyComponent: async (parent, args, { Component }) => {
       let component = await Component(args).save();
       return prepare(component);
+    },
+    copyChildren: async (parent, { childrenData }, { Component }) => {
+      console.log("childrenData", childrenData)
+      const children = childrenData.map(async child => {
+        const data = await Component.find({ _id: child._id });
+        console.log('before component--', data[0]);
+        let component = {
+          iteration: child.iteration,
+          // for now
+          children: [],
+          name: data[0].name,
+          state: data[0].state, 
+          props: data[0].props, 
+          callbacks: data[0].callbacks, 
+          projectId: data[0].projectId, 
+          style: data[0].style, 
+          placement: data[0].placement, 
+          cloneId: data[0].cloneId, 
+        }
+        console.log('after component--', component);
+        let copy = await Component(component).save();
+        console.log('copy', copy);
+        return prepare(copy)
+      })
+      console.log("children", children);
+      return children
     },
     toggleComponentStyle: async (parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
@@ -171,7 +209,7 @@ export default {
       const state = await State.find({ _id });
       return prepare(state[0]);
     },
-    addCallback: async (parent, { callback}, { Callback }) => {
+    addCallback: async (parent, { callback }, { Callback }) => {
       let result = await Callback(callback).save();
       const cb = await Callback.find({ _id: result._id })
       return prepare(cb[0]);

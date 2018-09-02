@@ -11,6 +11,10 @@ export default `
     statetype: StateType!
   }
 
+  input InputStateList {
+    states: [InputState]
+  }
+
   input InputArgument {
     name: String
     typeName: String
@@ -27,5 +31,10 @@ export default `
     functionArgs: [InputArgument]
     setState: [InputSetStateParams]
     description: String
+  }
+
+  input InputChildrenData {
+    _id: String!
+    iteration: Int!
   }
 `;

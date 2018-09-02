@@ -18,9 +18,10 @@ export default `
 
   type Component {
     _id: String!
+    projectId: String!
+    cloneId: String!
     name: String!
     iteration: Int!
-    projectId: String!
     style: ComponentType!
     placement: Placement!
     children: [String]
