@@ -135,6 +135,7 @@ export default {
       return prepare(component);
     },
     copyChildren: async (parent, { childrenData }, { Component }) => {
+      console.log("childrenData", childrenData)
       const children = childrenData.map(async child => {
         const data = await Component.find({ _id: child._id });
         console.log('before component--', data[0]);
@@ -156,6 +157,7 @@ export default {
         console.log('copy', copy);
         return prepare(copy)
       })
+      console.log("children", children);
       return children
     },
     toggleComponentStyle: async (parent, { _id }, { Component }) => {
