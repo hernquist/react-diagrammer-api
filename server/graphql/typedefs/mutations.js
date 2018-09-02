@@ -18,6 +18,9 @@ export default `
       placement: Placement!,
       children: [String],
     ): Component!
+    copyChildren(
+      childrenData: [InputChildrenData]
+    ): [Component]!
     deleteProject(_id: String!): Boolean
     toggleComponentStyle(_id: String!): Component
     addChild(_id: String!, childId: String): Boolean

@@ -32,4 +32,9 @@ export default `
     setState: [InputSetStateParams]
     description: String
   }
+
+  input InputChildrenData {
+    _id: String!
+    iteration: Int!
+  }
 `;

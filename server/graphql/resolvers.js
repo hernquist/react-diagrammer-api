@@ -125,16 +125,38 @@ export default {
     createComponent: async (parent, args, { Component }) => {
       const component = await Component(args).save();
       const { _id } = component;
-      console.log("first", component)
       const updatedComponent = await Component.update({ _id }, { cloneId: _id, iteration: 0} )
-      console.log("second", updatedComponent)
+      console.log(updatedComponent)
       const returnComponent = await Component.find({ _id })
-      console.log("third", returnComponent)
       return prepare(returnComponent[0]);
     },
-    copyComponent: async (parent, args, { Component, State, Prop, Callback }) => {
+    copyComponent: async (parent, args, { Component }) => {
       let component = await Component(args).save();
       return prepare(component);
+    },
+    copyChildren: async (parent, { childrenData }, { Component }) => {
+      const children = childrenData.map(async child => {
+        const data = await Component.find({ _id: child._id });
+        console.log('before component--', data[0]);
+        let component = {
+          iteration: child.iteration,
+          // for now
+          children: [],
+          name: data[0].name,
+          state: data[0].state, 
+          props: data[0].props, 
+          callbacks: data[0].callbacks, 
+          projectId: data[0].projectId, 
+          style: data[0].style, 
+          placement: data[0].placement, 
+          cloneId: data[0].cloneId, 
+        }
+        console.log('after component--', component);
+        let copy = await Component(component).save();
+        console.log('copy', copy);
+        return prepare(copy)
+      })
+      return children
     },
     toggleComponentStyle: async (parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
