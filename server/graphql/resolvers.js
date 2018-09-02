@@ -139,9 +139,9 @@ export default {
       const children = childrenData.map(async child => {
         const data = await Component.find({ _id: child._id });
         console.log('before component--', data[0]);
+        // for now -- children: [], although this doesn't get passed to the client 
         let component = {
           iteration: child.iteration,
-          // for now
           children: [],
           name: data[0].name,
           state: data[0].state, 
