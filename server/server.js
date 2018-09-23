@@ -37,7 +37,7 @@ const addUserMiddleware = async req => {
     if (signUp) {
       console.log("SignUp");
     } else {
-      console.log("Error-1:", err);
+      console.log("Error-1:", err.name);
     }
   }
   req.next();
