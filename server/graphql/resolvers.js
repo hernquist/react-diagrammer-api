@@ -219,7 +219,8 @@ export default {
       return result.n === 1;
     },
     editCallback: async (parent, { _id, name, description, setState, functionArgs }, { Callback }) => {
-      let result = await Callback.findOneAndUpdate(
+      console.log(_id, name, description, setState, functionArgs)
+      await Callback.findOneAndUpdate(
         { _id }, 
         { 
           name, 
@@ -228,7 +229,8 @@ export default {
           functionArgs 
         }
       );
-      const cb = await Callback.find({ _id: result._id });
+      const cb = await Callback.find({ _id });
+      console.log('cb:', cb)
       return prepare(cb[0]);
     }
   }
