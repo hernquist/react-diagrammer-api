@@ -81,31 +81,48 @@ export default {
     login: async (parent, { email, password }, context) => {
       const { User } = context;
       const user = await User.findOne({ email: email });
-      if (!user) {
-        throw new Error("No user with that email");
+
+      if (!user) { 
+        throw new Error("No user with that email"); 
       }
+
       const isValid = await bcrypt.compare(password, user.password);
+      
       if (!isValid) {
         throw new Error("Incorrect password");
       }
+
       const token = jwt.sign(
         { user: _.pick(user, ["_id", "name"]) },
         context.SECRET,
         { expiresIn: "1y" }
       );
+
       context.token = token;
-      return token;
+      return context.token;
     },
     signup: async (parent, args, context) => {
       const User = context.User;
       const user = args;
+      
+      const users = await User.find({});
+      const username = users.some(u => u.name === user.name);
+      const email = users.some(u => u.email === user.email);
+
+      if (username || email) {
+        return Number(username) + Number(email) * 2
+      }
+      
       user.password = await bcrypt.hash(args.password, 12);
+      
       const savedUser = await User(user).save();
+      
       const token = jwt.sign(
         { user: _.pick(savedUser, ["_id", "name"]) },
         context.SECRET,
         { expiresIn: "1y" }
       );
+
       context.token = token;
       return token;
     },
