@@ -125,6 +125,7 @@ export default {
     createComponent: async (parent, args, { Component }) => {
       const component = await Component(args).save();
       const { _id } = component;
+      // why am I doing it this way?
       const updatedComponent = await Component.update({ _id }, { cloneId: _id, iteration: 0} )
       console.log(updatedComponent)
       const returnComponent = await Component.find({ _id })
@@ -228,7 +229,9 @@ export default {
           functionArgs 
         }
       );
+      console.log(result)
       const cb = await Callback.find({ _id: result._id });
+      console.log('cb:', cb)
       return prepare(cb[0]);
     }
   }
