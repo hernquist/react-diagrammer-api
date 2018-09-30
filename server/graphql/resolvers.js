@@ -125,6 +125,7 @@ export default {
     createComponent: async (parent, args, { Component }) => {
       const component = await Component(args).save();
       const { _id } = component;
+      // why am I doing it this way?
       const updatedComponent = await Component.update({ _id }, { cloneId: _id, iteration: 0} )
       console.log(updatedComponent)
       const returnComponent = await Component.find({ _id })
@@ -219,8 +220,7 @@ export default {
       return result.n === 1;
     },
     editCallback: async (parent, { _id, name, description, setState, functionArgs }, { Callback }) => {
-      console.log(_id, name, description, setState, functionArgs)
-      await Callback.findOneAndUpdate(
+      let result = await Callback.findOneAndUpdate(
         { _id }, 
         { 
           name, 
@@ -229,7 +229,8 @@ export default {
           functionArgs 
         }
       );
-      const cb = await Callback.find({ _id });
+      console.log(result)
+      const cb = await Callback.find({ _id: result._id });
       console.log('cb:', cb)
       return prepare(cb[0]);
     }
