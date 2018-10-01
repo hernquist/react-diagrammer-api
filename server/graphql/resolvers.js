@@ -106,6 +106,7 @@ export default {
       const user = args;
       
       const users = await User.find({});
+
       const username = users.some(u => u.name === user.name);
       const email = users.some(u => u.email === user.email);
 
@@ -114,7 +115,6 @@ export default {
       }
       
       user.password = await bcrypt.hash(args.password, 12);
-      
       const savedUser = await User(user).save();
       
       const token = jwt.sign(
@@ -153,10 +153,8 @@ export default {
       return prepare(component);
     },
     copyChildren: async (parent, { childrenData }, { Component }) => {
-      console.log("childrenData", childrenData)
       const children = childrenData.map(async child => {
         const data = await Component.find({ _id: child._id });
-        console.log('before component--', data[0]);
         // for now -- children: [], although this doesn't get passed to the client 
         let component = {
           iteration: child.iteration,
@@ -170,12 +168,9 @@ export default {
           placement: data[0].placement, 
           cloneId: data[0].cloneId, 
         }
-        console.log('after component--', component);
         let copy = await Component(component).save();
-        console.log('copy', copy);
         return prepare(copy)
       })
-      console.log("children", children);
       return children
     },
     toggleComponentStyle: async (parent, { _id }, { Component }) => {
