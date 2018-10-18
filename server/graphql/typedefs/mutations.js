@@ -40,5 +40,6 @@ export default `
       setState: [InputSetStateParams],
       description: String
     ): Callback
+    unassignComponent(_id: String!): Boolean
   }
 `;
