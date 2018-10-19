@@ -248,7 +248,9 @@ export default {
       return prepare(cb[0]);
     },
     unassignComponent: async (parent, { _id, parentId }, { Component }) => {
-      const parentComp = await Component.find({ _id: parentId });
+      const parentComp = await Component.find({
+        _id: parentId
+      });
       await Component.update({ _id }, { placement: "unassigned" });
       // console.log("[unassignComponent].parentComp:", parentComp);
       const newChildren = parentComp[0].children.filter(id => id !== _id);
@@ -258,22 +260,29 @@ export default {
         { children: newChildren }
       );
       // console.log("[unassignComponent].result:", result);
-      const newParent = await Component.find({ _id: parent });
+      const newParent = await Component.find({
+        _id: parentId
+      });
       // console.log("[unassignComponent].newParent:", prepare(newParent[0]));
-      const newChild = await Component.find({ _id });
-      // console.log(newChild);
+      const newChild = await Component.find({
+        _id
+      });
+      // console.log("[unassignComponent].newChild:", newChild);
       return [prepare(newChild[0]), prepare(newParent[0])];
     },
     assignComponent: async (parent, { _id, parentId }, { Component }) => {
-      const parentComp = await Component.find({ _id: parentId });
+      const parentComp = await Component.find({
+        _id: parentId
+      });
       await Component.update({ _id }, { placement: "child" });
       const newChildren = [...parentComp[0].children, _id];
-      let result = await Component.update(
-        { _id: parentId },
-        { children: newChildren }
-      );
-      const newParent = await Component.find({ _id: parent });
-      const newChild = await Component.find({ _id });
+      await Component.update({ _id: parentId }, { children: newChildren });
+      const newParent = await Component.find({
+        _id: parentId
+      });
+      const newChild = await Component.find({
+        _id
+      });
       return [prepare(newChild[0]), prepare(newParent[0])];
     }
   }
