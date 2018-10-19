@@ -247,11 +247,34 @@ export default {
       console.log("cb:", cb);
       return prepare(cb[0]);
     },
-    unassignComponent: async (parent, { _id }, { Component }) => {
+    unassignComponent: async (parent, { _id, parentId }, { Component }) => {
+      const parentComp = await Component.find({ _id: parentId });
       await Component.update({ _id }, { placement: "unassigned" });
-      const newComponent = await Component.find({ _id });
-      console.log(newComponent);
-      return prepare(newComponent[0]);
+      // console.log("[unassignComponent].parentComp:", parentComp);
+      const newChildren = parentComp[0].children.filter(id => id !== _id);
+      // console.log("[unassignComponent].newChildren", newChildren);
+      let result = await Component.update(
+        { _id: parentId },
+        { children: newChildren }
+      );
+      // console.log("[unassignComponent].result:", result);
+      const newParent = await Component.find({ _id: parent });
+      // console.log("[unassignComponent].newParent:", prepare(newParent[0]));
+      const newChild = await Component.find({ _id });
+      // console.log(newChild);
+      return [prepare(newChild[0]), prepare(newParent[0])];
+    },
+    assignComponent: async (parent, { _id, parentId }, { Component }) => {
+      const parentComp = await Component.find({ _id: parentId });
+      await Component.update({ _id }, { placement: "child" });
+      const newChildren = [...parentComp[0].children, _id];
+      let result = await Component.update(
+        { _id: parentId },
+        { children: newChildren }
+      );
+      const newParent = await Component.find({ _id: parent });
+      const newChild = await Component.find({ _id });
+      return [prepare(newChild[0]), prepare(newParent[0])];
     }
   }
 };

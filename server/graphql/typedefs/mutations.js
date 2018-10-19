@@ -40,6 +40,7 @@ export default `
       setState: [InputSetStateParams],
       description: String
     ): Callback
-    unassignComponent(_id: String!): Component
+    unassignComponent(_id: String!, parentId: String!): [Component]
+    assignComponent(_id: String!, parentId: String!): [Component]
   }
 `;
