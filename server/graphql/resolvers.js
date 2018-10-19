@@ -251,7 +251,7 @@ export default {
       await Component.update({ _id }, { placement: "unassigned" });
       const newComponent = await Component.find({ _id });
       console.log(newComponent);
-      return newComponent[0].placement === "unassigned";
+      return prepare(newComponent[0]);
     }
   }
 };
