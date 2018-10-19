@@ -248,9 +248,10 @@ export default {
       return prepare(cb[0]);
     },
     unassignComponent: async (parent, { _id }, { Component }) => {
-      await Component.update({ _id: _id }, { style: "unassigned" });
+      await Component.update({ _id }, { placement: "unassigned" });
       const newComponent = await Component.find({ _id });
-      return newComponent.placement === "unassigned";
+      console.log(newComponent);
+      return newComponent[0].placement === "unassigned";
     }
   }
 };
