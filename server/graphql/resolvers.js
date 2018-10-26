@@ -87,31 +87,48 @@ export default {
     login: async (parent, { email, password }, context) => {
       const { User } = context;
       const user = await User.findOne({ email: email });
-      if (!user) {
-        throw new Error("No user with that email");
+
+      if (!user) { 
+        throw new Error("No user with that email"); 
       }
+
       const isValid = await bcrypt.compare(password, user.password);
+      
       if (!isValid) {
         throw new Error("Incorrect password");
       }
+
       const token = jwt.sign(
         { user: _.pick(user, ["_id", "name"]) },
         context.SECRET,
         { expiresIn: "1y" }
       );
+
       context.token = token;
-      return token;
+      return context.token;
     },
     signup: async (parent, args, context) => {
       const User = context.User;
       const user = args;
+      
+      const users = await User.find({});
+
+      const username = users.some(u => u.name === user.name);
+      const email = users.some(u => u.email === user.email);
+
+      if (username || email) {
+        return Number(username) + Number(email) * 2
+      }
+      
       user.password = await bcrypt.hash(args.password, 12);
       const savedUser = await User(user).save();
+      
       const token = jwt.sign(
         { user: _.pick(savedUser, ["_id", "name"]) },
         context.SECRET,
         { expiresIn: "1y" }
       );
+
       context.token = token;
       return token;
     },
@@ -145,30 +162,25 @@ export default {
       return prepare(component);
     },
     copyChildren: async (parent, { childrenData }, { Component }) => {
-      console.log("childrenData", childrenData);
       const children = childrenData.map(async child => {
         const data = await Component.find({ _id: child._id });
-        console.log("before component--", data[0]);
-        // for now -- children: [], although this doesn't get passed to the client
+        // for now -- children: [], although this doesn't get passed to the client 
         let component = {
           iteration: child.iteration,
           children: [],
           name: data[0].name,
-          state: data[0].state,
-          props: data[0].props,
-          callbacks: data[0].callbacks,
-          projectId: data[0].projectId,
-          style: data[0].style,
-          placement: data[0].placement,
-          cloneId: data[0].cloneId
-        };
-        console.log("after component--", component);
+          state: data[0].state, 
+          props: data[0].props, 
+          callbacks: data[0].callbacks, 
+          projectId: data[0].projectId, 
+          style: data[0].style, 
+          placement: data[0].placement, 
+          cloneId: data[0].cloneId, 
+        }
         let copy = await Component(component).save();
-        console.log("copy", copy);
-        return prepare(copy);
-      });
-      console.log("children", children);
-      return children;
+        return prepare(copy)
+      })
+      return children
     },
     toggleComponentStyle: async (parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
