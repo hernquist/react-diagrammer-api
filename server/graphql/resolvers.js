@@ -35,7 +35,7 @@ export default {
         const user = await User.find({ _id });
         return prepare(user[0]);
       } else {
-      return new Error ("user not authenticated");
+        return new Error("user not authenticated");
       }
     },
     users: async (parent, args, { User }) => {
@@ -58,9 +58,9 @@ export default {
       const components = await Component.find({ projectId });
       return components.map(component => prepare(component));
     },
-    propsByComponentId: async (parent, {componentId}, { Prop }) => {
+    propsByComponentId: async (parent, { componentId }, { Prop }) => {
       const props = await Prop.find({ componentId });
-      return props.map(prop => prepare(prop)); 
+      return props.map(prop => prepare(prop));
     },
     stateByComponentId: async (parent, { componentId }, { State }) => {
       const state = await State.find({ componentId });
@@ -69,13 +69,19 @@ export default {
     callbacksByComponentId: async (parent, { componentId }, { Callback }) => {
       const callbacks = await Callback.find({ componentId });
       return callbacks.map(callback => prepare(callback));
-    },
+    }
   },
-  Project: { components: async({ _id }, args, { Component }) => await Component.find({ projectId: _id })},
-  Component: { 
-    props: async({ cloneId }, args, { Prop }) => await Prop.find({ componentId: cloneId }),
-    state: async({ cloneId }, args, { State }) => await State.find({ componentId: cloneId }),
-    callbacks: async ({ cloneId }, args, { Callback }) => await Callback.find({ componentId: cloneId })
+  Project: {
+    components: async ({ _id }, args, { Component }) =>
+      await Component.find({ projectId: _id })
+  },
+  Component: {
+    props: async ({ cloneId }, args, { Prop }) =>
+      await Prop.find({ componentId: cloneId }),
+    state: async ({ cloneId }, args, { State }) =>
+      await State.find({ componentId: cloneId }),
+    callbacks: async ({ cloneId }, args, { Callback }) =>
+      await Callback.find({ componentId: cloneId })
   },
   Mutation: {
     login: async (parent, { email, password }, context) => {
@@ -135,7 +141,7 @@ export default {
       const project = await Project(body).save();
       return prepare(project);
     },
-    deleteProject: async (parent, { _id }, { Project } ) => {
+    deleteProject: async (parent, { _id }, { Project }) => {
       let result = await Project.deleteOne({ _id });
       return result.n === 1;
     },
@@ -143,9 +149,12 @@ export default {
       const component = await Component(args).save();
       const { _id } = component;
       // why am I doing it this way?
-      const updatedComponent = await Component.update({ _id }, { cloneId: _id, iteration: 0} )
-      console.log(updatedComponent)
-      const returnComponent = await Component.find({ _id })
+      const updatedComponent = await Component.update(
+        { _id },
+        { cloneId: _id, iteration: 0 }
+      );
+      console.log(updatedComponent);
+      const returnComponent = await Component.find({ _id });
       return prepare(returnComponent[0]);
     },
     copyComponent: async (parent, args, { Component }) => {
@@ -175,12 +184,12 @@ export default {
     },
     toggleComponentStyle: async (parent, { _id }, { Component }) => {
       let component = await Component.find({ _id });
-      const style = component[0].style === 'container' ?
-        'presentational' : 'container';
+      const style =
+        component[0].style === "container" ? "presentational" : "container";
       component[0].style = style;
-      await Component.update({_id: _id}, {style: style})
+      await Component.update({ _id: _id }, { style: style });
       const newComponent = await Component.find({ _id });
-      return prepare(newComponent[0]); 
+      return prepare(newComponent[0]);
     },
     addChild: async (parent, { _id, childId }, { Component }) => {
       const component = await Component.find({ _id });
@@ -213,38 +222,80 @@ export default {
       let component = await Component.find({ _id });
       return prepare(component[0]);
     },
-    deleteState: async (parent, { _id }, { State}) => {
+    deleteState: async (parent, { _id }, { State }) => {
       let result = await State.deleteOne({ _id });
       return result.n === 1;
     },
-    editState: async (parent, { _id, name, statetype }, { State}) => {
+    editState: async (parent, { _id, name, statetype }, { State }) => {
       await State.findOneAndUpdate({ _id }, { name, statetype });
       const state = await State.find({ _id });
       return prepare(state[0]);
     },
     addCallback: async (parent, { callback }, { Callback }) => {
       let result = await Callback(callback).save();
-      const cb = await Callback.find({ _id: result._id })
+      const cb = await Callback.find({ _id: result._id });
       return prepare(cb[0]);
     },
     deleteCallback: async (parent, { _id }, { Callback }) => {
       let result = await Callback.deleteOne({ _id });
       return result.n === 1;
     },
-    editCallback: async (parent, { _id, name, description, setState, functionArgs }, { Callback }) => {
+    editCallback: async (
+      parent,
+      { _id, name, description, setState, functionArgs },
+      { Callback }
+    ) => {
       let result = await Callback.findOneAndUpdate(
-        { _id }, 
-        { 
-          name, 
-          description, 
-          setState, 
-          functionArgs 
+        { _id },
+        {
+          name,
+          description,
+          setState,
+          functionArgs
         }
       );
-      console.log(result)
+      console.log(result);
       const cb = await Callback.find({ _id: result._id });
-      console.log('cb:', cb)
+      console.log("cb:", cb);
       return prepare(cb[0]);
+    },
+    unassignComponent: async (parent, { _id, parentId }, { Component }) => {
+      const parentComp = await Component.find({
+        _id: parentId
+      });
+      await Component.update({ _id }, { placement: "unassigned" });
+      // console.log("[unassignComponent].parentComp:", parentComp);
+      const newChildren = parentComp[0].children.filter(id => id !== _id);
+      // console.log("[unassignComponent].newChildren", newChildren);
+      let result = await Component.update(
+        { _id: parentId },
+        { children: newChildren }
+      );
+      // console.log("[unassignComponent].result:", result);
+      const newParent = await Component.find({
+        _id: parentId
+      });
+      // console.log("[unassignComponent].newParent:", prepare(newParent[0]));
+      const newChild = await Component.find({
+        _id
+      });
+      // console.log("[unassignComponent].newChild:", newChild);
+      return [prepare(newChild[0]), prepare(newParent[0])];
+    },
+    assignComponent: async (parent, { _id, parentId }, { Component }) => {
+      const parentComp = await Component.find({
+        _id: parentId
+      });
+      await Component.update({ _id }, { placement: "child" });
+      const newChildren = [...parentComp[0].children, _id];
+      await Component.update({ _id: parentId }, { children: newChildren });
+      const newParent = await Component.find({
+        _id: parentId
+      });
+      const newChild = await Component.find({
+        _id
+      });
+      return [prepare(newChild[0]), prepare(newParent[0])];
     }
   }
 };
