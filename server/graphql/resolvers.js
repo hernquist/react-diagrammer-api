@@ -1,4 +1,3 @@
-import { MongoClient, ObjectId } from "mongodb";
 import { GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
 import bcrypt from "bcrypt";
