@@ -22,6 +22,7 @@ export default `
       childrenData: [InputChildrenData]
     ): [Component]!
     deleteProject(_id: String!): Boolean
+    deleteComponent(_id: String!, parentId: String!): Boolean
     toggleComponentStyle(_id: String!): Component
     addChild(_id: String!, childId: String): Boolean
     editComponentName(_id: String!, name: String!): Component
