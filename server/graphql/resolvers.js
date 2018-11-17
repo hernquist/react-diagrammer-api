@@ -140,9 +140,7 @@ export default {
     },
     deleteComponent: async (__, { _id, parentId }, { Component }) => {
       const component = await Component.find({ _id: parentId });
-      console.log('[deleteComponent.children]', component[0].children)
       const children = component[0].children.filter(id => id !== _id);
-      console.log('[deleteComponent.children]', children)
       await Component.update(
         { _id: parentId },
         { children }
