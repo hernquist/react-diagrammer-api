@@ -139,11 +139,13 @@ export default {
       return result.n === 1;
     },
     deleteComponent: async (__, { _id, parentId }, { Component }) => {
-      const component = await Component.find({ _id });
-      const updatedChildren = component[0].children.filter(id => id !== _id);
+      const component = await Component.find({ _id: parentId });
+      console.log('[deleteComponent.children]', component[0].children)
+      const children = component[0].children.filter(id => id !== _id);
+      console.log('[deleteComponent.children]', children)
       await Component.update(
         { _id: parentId },
-        { children: updatedChildren }
+        { children }
       );
       const result = await Component.deleteOne({ _id });
       return result.n === 1;
