@@ -8,7 +8,12 @@ import jwt from "jsonwebtoken";
 import schema from './graphql/schema';
 import { user, project, component, prop, state, cb } from './models/models';
 
-mongoose.connect("mongodb://localhost/react-diagrammer");
+// mongoose.connect("mongodb://localhost/react-diagrammer");
+// mongoose.connect("mongodb://hernquist:Coding2018@ds115664.mlab.com:15664/react-diagrammer?authSource=yourDB&w=1")
+mongoose.connect("mongodb://hernquist:Coding2018@ds115664.mlab.com:15664/react-diagrammer")
+  .then(res => console.log('mongoose.connect', res.connections[0].base.connections))
+  .catch(err => console.log('mongoose.connect', err) )
+// mongoose.connect("mongodb://hernquist:Coding2018@ds115664.mlab.com:15664/react-diagrammer?authSource=admin")
 
 const User      = mongoose.model("User", user);
 const Project   = mongoose.model("Project", project); 
