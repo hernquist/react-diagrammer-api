@@ -9,10 +9,16 @@ import schema from "./graphql/schema";
 import { user, project, component, prop, state, cb } from "./models/models";
 
 // mongoose.connect("mongodb://localhost/react-diagrammer");
+<<<<<<< HEAD
 mongoose
   .connect("mongodb://hernquist:***@ds115664.mlab.com:15664/react-diagrammer")
   .then(res => console.log("mongoose.connection... mlab connected"))
   .catch(err => console.log("mongoose.connect", err));
+=======
+mongoose.connect("mongodb://:@ds115664.mlab.com:15664/react-diagrammer")
+  .then(res => console.log('mongoose.connect', res.connections[0].base.connections))
+  .catch(err => console.log('mongoose.connect', err) )
+>>>>>>> 553fa97b50d2da0a1d864f8ab3948dfee37c28e7
 
 const User = mongoose.model("User", user);
 const Project = mongoose.model("Project", project);
