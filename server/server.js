@@ -10,9 +10,7 @@ import { user, project, component, prop, state, cb } from "./models/models";
 
 // mongoose.connect("mongodb://localhost/react-diagrammer");
 mongoose
-  .connect(
-    "mongodb://hernquist:Obama2020@ds115664.mlab.com:15664/react-diagrammer"
-  )
+  .connect("mongodb://hernquist:***@ds115664.mlab.com:15664/react-diagrammer")
   .then(res => console.log("mongoose.connection... mlab connected"))
   .catch(err => console.log("mongoose.connect", err));
 
@@ -86,5 +84,5 @@ app.use("/", (_, res) => {
 
 const server = app.listen(process.env.PORT || 3001, () => {
   const { port } = server.address();
-  console.info(`Express listening at http://localhost:${port}`);
+  console.info(`Express listening on ${port}`);
 });
