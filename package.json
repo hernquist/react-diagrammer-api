@@ -9,7 +9,7 @@
     "start-old-way": "NODE_ENV=production node server/",
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel -d ./build ./server -s",
-    "build": "yarn clean && yarn build-build",
+    "build": "yarn clean && yarn build-babel",
     "start": "yarn build && node ./build/index.js"
   },
   "author": "david hernquist",
