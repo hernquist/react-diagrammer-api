@@ -84,7 +84,7 @@ app.use("/", (_, res) => {
   res.json("Go to /graphiql to test your queries and mutations!");
 });
 
-const server = app.listen(3001, () => {
+const server = app.listen(process.env.PORT || 3001, () => {
   const { port } = server.address();
-  console.info(`Express listen at http://localhost:${port}`);
+  console.info(`Express listening at http://localhost:${port}`);
 });
