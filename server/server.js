@@ -8,8 +8,10 @@ import jwt from "jsonwebtoken";
 import schema from "./graphql/schema";
 import { user, project, component, prop, state, cb } from "./models/models";
 
-mongoose.connect(process.env.DATABASE)
-  .then(_ => console.log('mongoose.connect: authenication working'))
+const { SECRET, DATABASE, NODE_ENV, PORT } = process.env;
+
+mongoose.connect(DATABASE)
+  .then(_ => console.log('mongoose.connect: authentication working'))
   .catch(err => console.log('mongoose.connect', err) )
 
 const User = mongoose.model("User", user);
@@ -20,11 +22,10 @@ const State = mongoose.model("State", state);
 const Callback = mongoose.model("Callback", cb);
 
 const app = express();
-const dev = process.env.NODE_ENV === "development";
 const homePath = "/graphiql";
 
+
 // auth middleware
-const SECRET = "qwertyuiopsdflkjsdlfkj";
 const addUserMiddleware = async req => {
   const token = req.headers["x-token"]; // || req.headers.authorization;
   console.log("[addUserMiddleware] token:", token);
@@ -80,7 +81,7 @@ app.use("/", (_, res) => {
   res.json("Go to /graphiql to test your queries and mutations!");
 });
 
-const server = app.listen(process.env.PORT || 3001, () => {
+const server = app.listen(PORT || 3001, () => {
   const { port } = server.address();
-  console.info(`Express listening on ${port}`);
+  console.info(`Express listening on ${port} in ${NODE_ENV}`);
 });
