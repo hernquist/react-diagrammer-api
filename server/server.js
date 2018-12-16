@@ -9,8 +9,10 @@ import schema from './graphql/schema';
 import { user, project, component, prop, state, cb } from './models/models';
 
 // mongoose.connect("mongodb://localhost/react-diagrammer");
-mongoose.connect("mongodb://:@ds115664.mlab.com:15664/react-diagrammer")
-  .then(res => console.log('mongoose.connect', res.connections[0].base.connections))
+// mongoose.connect("mongodb://hernquist:Obama2020@ds115664.mlab.com:15664/react-diagrammer")
+
+mongoose.connect(process.env.DATABASE)
+  .then(res => console.log('mongoose.connect: authenication working'))
   .catch(err => console.log('mongoose.connect', err) )
 
 const User      = mongoose.model("User", user);
