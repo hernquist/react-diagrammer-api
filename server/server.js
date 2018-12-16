@@ -48,31 +48,24 @@ app.use(addUserMiddleware);
 app.use(morgan("dev"));
 app.use(cors("*"));
 
-app.use(
-  homePath,
-  graphiqlExpress({
-    endpointURL: "/graphql"
-  })
-);
+app.use(homePath, graphiqlExpress({ endpointURL: "/graphql" }));
 
 app.use(
   "/graphql",
   bodyParser.json(),
-  graphqlExpress(req => {
-    return {
-      schema,
-      context: {
-        User,
-        Project,
-        Component,
-        Prop,
-        State,
-        Callback,
-        SECRET,
-        user: req.user
-      }
-    };
-  })
+  graphqlExpress(req => ({
+    schema,
+    context: {
+      User,
+      Project,
+      Component,
+      Prop,
+      State,
+      Callback,
+      SECRET,
+      user: req.user
+    }
+  }))
 );
 
 app.use("/", (_, res) => {
