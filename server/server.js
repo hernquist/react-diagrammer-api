@@ -5,19 +5,19 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import schema from './graphql/schema';
-import { user, project, component, prop, state, cb } from './models/models';
+import schema from "./graphql/schema";
+import { user, project, component, prop, state, cb } from "./models/models";
 
 mongoose.connect(process.env.DATABASE)
   .then(_ => console.log('mongoose.connect: authenication working'))
   .catch(err => console.log('mongoose.connect', err) )
 
-const User      = mongoose.model("User", user);
-const Project   = mongoose.model("Project", project); 
+const User = mongoose.model("User", user);
+const Project = mongoose.model("Project", project);
 const Component = mongoose.model("Component", component);
-const Prop      = mongoose.model("Prop", prop);
-const State     = mongoose.model("State", state);
-const Callback  = mongoose.model("Callback", cb);
+const Prop = mongoose.model("Prop", prop);
+const State = mongoose.model("State", state);
+const Callback = mongoose.model("Callback", cb);
 
 const app = express();
 const dev = process.env.NODE_ENV === "development";
@@ -26,10 +26,10 @@ const homePath = "/graphiql";
 // auth middleware
 const SECRET = "qwertyuiopsdflkjsdlfkj";
 const addUserMiddleware = async req => {
-  const token = req.headers["x-token"];   // || req.headers.authorization;
-  console.log("[addUserMiddleware] token:", token); 
+  const token = req.headers["x-token"]; // || req.headers.authorization;
+  console.log("[addUserMiddleware] token:", token);
   const message = req.headers.referer;
-  const signUp = (typeof message === "string" && message.includes("signUp"))
+  const signUp = typeof message === "string" && message.includes("signUp");
 
   try {
     const { user } = await jwt.verify(token, SECRET);
@@ -59,7 +59,7 @@ app.use(
 app.use(
   "/graphql",
   bodyParser.json(),
-  graphqlExpress((req) => {
+  graphqlExpress(req => {
     return {
       schema,
       context: {
@@ -80,7 +80,7 @@ app.use("/", (_, res) => {
   res.json("Go to /graphiql to test your queries and mutations!");
 });
 
-const server = app.listen(3001, () => {
+const server = app.listen(process.env.PORT || 3001, () => {
   const { port } = server.address();
-  console.info(`Express listen at http://localhost:${port}`);
+  console.info(`Express listening on ${port}`);
 });
