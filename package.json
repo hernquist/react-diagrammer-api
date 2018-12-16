@@ -6,7 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -w server/ --exec 'NODE_ENV=development node server/'",
-    "start-old-way": "NODE_ENV=production node server/",
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel -d ./build ./server -s",
     "build": "yarn clean && yarn build-babel",

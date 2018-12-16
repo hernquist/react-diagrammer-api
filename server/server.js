@@ -12,7 +12,11 @@ const { SECRET, DATABASE, NODE_ENV, PORT } = process.env;
 
 mongoose.connect(DATABASE)
   .then(_ => console.log('mongoose.connect: authentication working'))
-  .catch(err => console.log('mongoose.connect', err) )
+  .catch(err => console.log('mongoose.connect', err))
+
+mongoose.connection.on('error', (err) => {
+  console.error(`ERROR → ${err.message}`);
+});  
 
 const User = mongoose.model("User", user);
 const Project = mongoose.model("Project", project);
@@ -24,10 +28,8 @@ const Callback = mongoose.model("Callback", cb);
 const app = express();
 const homePath = "/graphiql";
 
-
-// auth middleware
 const addUserMiddleware = async req => {
-  const token = req.headers["x-token"]; // || req.headers.authorization;
+  const token = req.headers["x-token"];
   console.log("[addUserMiddleware] token:", token);
   const message = req.headers.referer;
   const signUp = typeof message === "string" && message.includes("signUp");
@@ -37,11 +39,7 @@ const addUserMiddleware = async req => {
     console.log("[addUserMiddleware] user:", user);
     req.user = user;
   } catch (err) {
-    if (signUp) {
-      console.log("SignUp");
-    } else {
-      console.log("Error-1:", err.name);
-    }
+    console.log(`${signUp ? `SignUp` : `Error-1: ${err.name}`}`);
   }
   req.next();
 };
