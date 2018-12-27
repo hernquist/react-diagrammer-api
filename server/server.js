@@ -8,9 +8,10 @@ import jwt from "jsonwebtoken";
 import schema from "./graphql/schema";
 import { user, project, component, prop, state, cb } from "./models/models";
 
-const { SECRET, DATABASE, NODE_ENV, PORT } = process.env;
+const { SECRET, DATABASE, NODE_ENV, PORT, LOCAL_DATABASE } = process.env;
+const database = NODE_ENV === 'production' ? DATABASE : LOCAL_DATABASE;
 
-mongoose.connect(DATABASE)
+mongoose.connect(database)
   .then(_ => console.log('mongoose.connect: authentication working'))
   .catch(err => console.log('mongoose.connect', err))
 
