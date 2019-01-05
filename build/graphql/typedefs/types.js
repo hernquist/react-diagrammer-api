@@ -1,7 +1,0 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = "\n  type User {\n    _id: String!\n    email: String!\n    name: String!\n    password: String!\n  }\n\n  type Project {\n    _id: String!\n    userId: String!\n    name: String!\n    description: String!\n    dateCreated: Date!\n    dateVisited: Date!\n    components: [Component]\n  }\n\n  type Component {\n    _id: String!\n    projectId: String!\n    cloneId: String!\n    name: String!\n    iteration: Int!\n    style: ComponentType!\n    placement: Placement!\n    children: [String]\n    state: [State]\n    props: [Prop]\n    callbacks: [Callback]\n  }\n\n  type Prop {\n    _id: String!\n    componentId: String!\n    name: String!\n    proptype: PropType!\n  }\n\n  type State {\n    _id: String!\n    componentId: String!\n    name: String!\n    statetype: StateType!\n  }\n\n  type Argument {\n    name: String\n    typeName: String\n  }\n\n  type SetStateParams {\n    stateField: String\n    stateChange: String\n  }\n\n  type Callback {\n    _id: String!\n    componentId: String!\n    name: String!\n    functionArgs: [Argument]\n    setState: [SetStateParams]\n    description: String\n  }\n";
-//# sourceMappingURL=types.js.map

@@ -15,7 +15,8 @@
   "license": "ISC",
   "keywords": [
     "graphql",
-    "express"
+    "express",
+    "mongoose"
   ],
   "dependencies": {
     "64": "^0.2.0",
