@@ -1,6 +1,6 @@
 import { GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
 
@@ -85,8 +85,8 @@ export default {
   Mutation: {
     login: async (__, { email, password }, { User, SECRET }) => {
       const user = await User.findOne({ email: email });
-      if (!user) { 
-        throw new Error("No user with that email"); 
+      if (!user) {
+        throw new Error("No user with that email");
       }
 
       const isValid = await bcrypt.compare(password, user.password);
@@ -94,12 +94,10 @@ export default {
         throw new Error("Incorrect password");
       }
 
-      const token = jwt.sign(
-        { user: _.pick(user, ["_id", "name"]) },
-        SECRET,
-        { expiresIn: "1y" }
-      );
-      return token
+      const token = jwt.sign({ user: _.pick(user, ["_id", "name"]) }, SECRET, {
+        expiresIn: "1y"
+      });
+      return token;
     },
     signup: async (__, args, context) => {
       const User = context.User;
@@ -110,12 +108,12 @@ export default {
       const email = users.some(u => u.email === user.email);
 
       if (username || email) {
-        return Number(username) + Number(email) * 2
+        return Number(username) + Number(email) * 2;
       }
-      
+
       user.password = await bcrypt.hash(args.password, 12);
       const savedUser = await User(user).save();
-      
+
       const token = jwt.sign(
         { user: _.pick(savedUser, ["_id", "name"]) },
         context.SECRET,
@@ -141,24 +139,18 @@ export default {
     deleteComponent: async (__, { _id, parentId }, { Component }) => {
       const component = await Component.find({ _id: parentId });
       const children = component[0].children.filter(id => id !== _id);
-      await Component.update(
-        { _id: parentId },
-        { children }
-      );
+      await Component.update({ _id: parentId }, { children });
       const result = await Component.deleteOne({ _id });
       return result.n === 1;
     },
     deleteUnassignedComponent: async (__, { _id }, { Component }) => {
-      const result = await Component.deleteOne({ _id })
+      const result = await Component.deleteOne({ _id });
       return result.n === 1;
     },
     createComponent: async (__, args, { Component }) => {
       const component = await Component(args).save();
       const { _id } = component;
-      await Component.update(
-        { _id },
-        { cloneId: _id, iteration: 0 }
-      );
+      await Component.update({ _id }, { cloneId: _id, iteration: 0 });
       const returnComponent = await Component.find({ _id });
       return prepare(returnComponent[0]);
     },
@@ -173,22 +165,23 @@ export default {
           iteration: child.iteration,
           children: [],
           name: data[0].name,
-          state: data[0].state, 
-          props: data[0].props, 
-          callbacks: data[0].callbacks, 
-          projectId: data[0].projectId, 
-          style: data[0].style, 
-          placement: data[0].placement, 
-          cloneId: data[0].cloneId, 
-        }
+          state: data[0].state,
+          props: data[0].props,
+          callbacks: data[0].callbacks,
+          projectId: data[0].projectId,
+          style: data[0].style,
+          placement: data[0].placement,
+          cloneId: data[0].cloneId
+        };
         const copy = await Component(component).save();
-        return prepare(copy)
-      })
-      return children
+        return prepare(copy);
+      });
+      return children;
     },
     toggleComponentStyle: async (__, { _id }, { Component }) => {
       let component = await Component.find({ _id });
-      const style = component[0].style === "container" ? "presentational" : "container";
+      const style =
+        component[0].style === "container" ? "presentational" : "container";
       component[0].style = style;
       await Component.update({ _id: _id }, { style: style });
       const newComponent = await Component.find({ _id });
@@ -264,11 +257,8 @@ export default {
       const parentComp = await Component.find({ _id: parentId });
       await Component.update({ _id }, { placement: "unassigned" });
       const newChildren = parentComp[0].children.filter(id => id !== _id);
-      await Component.update(
-        { _id: parentId },
-        { children: newChildren }
-      );
-      const newParent = await Component.find({ _id: parentId});
+      await Component.update({ _id: parentId }, { children: newChildren });
+      const newParent = await Component.find({ _id: parentId });
       const newChild = await Component.find({ _id });
       return [prepare(newChild[0]), prepare(newParent[0])];
     },
