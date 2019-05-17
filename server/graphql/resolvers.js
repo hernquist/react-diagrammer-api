@@ -5,7 +5,10 @@ import jwt from "jsonwebtoken";
 import _ from "lodash";
 
 const prepare = obj => {
-  obj._id = obj._id.toString();
+  if (obj) {
+    obj._id = obj._id.toString();
+    return obj;
+  }
   return obj;
 };
 
@@ -51,6 +54,10 @@ export default {
     },
     projectsByUserId: async (__, { userId }, { Project }) => {
       const projects = await Project.find({ userId });
+      return projects.map(project => prepare(project));
+    },
+    getProjects: async (__, ___, { Project }) => {
+      const projects = await Project.find();
       return projects.map(project => prepare(project));
     },
     componentsByProjectId: async (__, { projectId }, { Component }) => {

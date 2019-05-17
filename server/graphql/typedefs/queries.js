@@ -11,5 +11,6 @@ export default `
     propsByComponentId(componentId: String!): [Prop]
     stateByComponentId(componentId: String!): [State]
     callbacksByComponentId(componentId: String!): [Callback]
+    getProjects: [Project]
   }
 `;
