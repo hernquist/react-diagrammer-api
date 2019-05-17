@@ -7,7 +7,6 @@ import _ from "lodash";
 const prepare = obj => {
   if (obj) {
     obj._id = obj._id.toString();
-    return obj;
   }
   return obj;
 };
