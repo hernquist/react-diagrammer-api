@@ -55,7 +55,7 @@ export default {
       const projects = await Project.find({ userId });
       return projects.map(project => prepare(project));
     },
-    getProjects: async (__, ___, { Project }) => {
+    getProjectsForPolling: async (__, ___, { Project }) => {
       // "5cdeba91f47a0a004ef4b572" is sample at hernquist@yahoo.com
       const projects =
         process.env.NODE_ENV === "production"
