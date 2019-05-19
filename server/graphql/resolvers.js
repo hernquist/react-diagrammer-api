@@ -7,7 +7,6 @@ import _ from "lodash";
 const prepare = obj => {
   if (obj) {
     obj._id = obj._id.toString();
-    return obj;
   }
   return obj;
 };
@@ -56,8 +55,14 @@ export default {
       const projects = await Project.find({ userId });
       return projects.map(project => prepare(project));
     },
-    getProjects: async (__, ___, { Project }) => {
-      const projects = await Project.find();
+    getProjectsForPolling: async (__, ___, { Project }) => {
+      // "5cdeba91f47a0a004ef4b572" is sample at hernquist@yahoo.com
+      const projects =
+        process.env.NODE_ENV === "production"
+          ? await Project.find({
+              userId: "5cdeba91f47a0a004ef4b572"
+            })
+          : await Project.find();
       return projects.map(project => prepare(project));
     },
     componentsByProjectId: async (__, { projectId }, { Component }) => {
